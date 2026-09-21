@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Night Routine & Rewards</title>
+  
+  <!-- iOS PWA Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Night Routine">
+  <meta name="theme-color" content="#0a0e1a">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header>
+      <div class="top-bar">
+        <div class="logo-wrap">
+          <span>🌙</span>
+          <h1>Night Routine</h1>
+        </div>
+        <div class="header-actions">
+          <button id="manualLockBtn" class="icon-btn" title="Lock App" aria-label="Lock App">
+            🔒
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Token Inventory Bar -->
+      <div class="inventory-bar glass-panel">
+        <div class="token-pill gold">
+          <span class="token-icon">🥇</span>
+          <div class="token-data">
+            <span class="token-label">Gold</span>
+            <span id="goldCount" class="token-count">0</span>
+          </div>
+        </div>
+        <div class="token-pill silver">
+          <span class="token-icon">🥈</span>
+          <div class="token-data">
+            <span class="token-label">Silver</span>
+            <span id="silverCount" class="token-count">0</span>
+          </div>
+        </div>
+        <div class="token-pill bronze">
+          <span class="token-icon">🥉</span>
+          <div class="token-data">
+            <span class="token-label">Bronze</span>
+            <span id="bronzeCount" class="token-count">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Visual Countdown Timer -->
+      <div id="countdownCard" class="countdown-card glass-panel">
+        <div class="countdown-content">
+          <div class="countdown-label">
+            <span>⏰</span>
+            <span id="countdownStatusText">Time left for tonight's routine:</span>
+          </div>
+          <div id="countdownTimer" class="countdown-val">Calculating...</div>
+        </div>
+        <span id="cutoffBadge" class="cutoff-badge">Cutoff 9:00 PM</span>
+      </div>
+    </header>
+
+    <!-- Main Content Views -->
+    <main>
+      <!-- TAB 1: ROUTINE CHECKLIST -->
+      <section id="viewRoutine" class="view-section active">
+        <div class="section-title">Evening Checklist</div>
+        <div id="tasksList" class="tasks-list">
+          <!-- Populated by JavaScript -->
+        </div>
+
+        <div class="claim-reward-wrap">
+          <button id="claimRewardBtn" class="primary-btn claim-btn" disabled>
+            <span>🎁 Claim Nightly Reward</span>
+            <span style="font-size:0.85rem; opacity:0.9;">(+5 Spins)</span>
+          </button>
+          <p id="claimSubtitle" class="claim-subtitle">Complete all tasks before 9:00 PM to claim!</p>
+        </div>
+      </section>
+
+      <!-- TAB 2: SLOT MACHINE -->
+      <section id="viewSlots" class="view-section">
+        <div class="slot-machine-card glass-panel">
+          <div class="slot-banner">
+            <h2>✨ Midnight Slots ✨</h2>
+            <div class="spins-badge-large">
+              <span>🎰</span>
+              <span>Spins Remaining: <strong id="spinsRemaining">0</strong></span>
+            </div>
+          </div>
+
+          <!-- 3-Reel Slot Window -->
+          <div class="slot-window">
+            <div class="reel-column" id="reel0">
+              <div class="reel-strip" id="strip0">
+                <div class="reel-item">🌙</div>
+              </div>
+            </div>
+            <div class="reel-column" id="reel1">
+              <div class="reel-strip" id="strip1">
+                <div class="reel-item">🌙</div>
+              </div>
+            </div>
+            <div class="reel-column" id="reel2">
+              <div class="reel-strip" id="strip2">
+                <div class="reel-item">🌙</div>
+              </div>
+            </div>
+          </div>
+
+          <button id="spinBtn" class="primary-btn spin-action-btn" disabled>
+            Spin Reels!
+          </button>
+        </div>
+
+        <!-- Slot Odds Card -->
+        <div class="odds-card glass-panel">
+          <div class="odds-title">Token Drop Probabilities</div>
+          <div class="odds-row">
+            <span class="odds-tier">🥇 Gold Token (Grand)</span>
+            <span class="odds-chance">1 in 500 (0.2%)</span>
+          </div>
+          <div class="odds-row">
+            <span class="odds-tier">🥈 Silver Token (Major)</span>
+            <span class="odds-chance">1 in 75 (1.33%)</span>
+          </div>
+          <div class="odds-row">
+            <span class="odds-tier">🥉 Bronze Token (Minor)</span>
+            <span class="odds-chance">1 in 15 (6.67%)</span>
+          </div>
+          <div class="odds-row">
+            <span class="odds-tier">⚪ No Token (Consolation)</span>
+            <span class="odds-chance">~91.8%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: REWARD STORE -->
+      <section id="viewStore" class="view-section">
+        <div class="section-title">Reward Store</div>
+        
+        <!-- Gold Tier -->
+        <div class="store-tier">
+          <div class="tier-header gold">🥇 Gold Tier Rewards</div>
+          <div class="reward-card glass-panel">
+            <div class="reward-info">
+              <span class="reward-name">Target 1 finger challenge</span>
+              <span class="reward-cost">Cost: 1 Gold Token 🥇</span>
+            </div>
+            <button class="redeem-btn" data-tier="gold" data-prize="Target 1 finger challenge">Redeem</button>
+          </div>
+        </div>
+
+        <!-- Silver Tier -->
+        <div class="store-tier">
+          <div class="tier-header silver">🥈 Silver Tier Rewards</div>
+          <div class="reward-card glass-panel">
+            <div class="reward-info">
+              <span class="reward-name">30-Min Full Massage</span>
+              <span class="reward-cost">Cost: 1 Silver Token 🥈</span>
+            </div>
+            <button class="redeem-btn" data-tier="silver" data-prize="30-Min Full Massage">Redeem</button>
+          </div>
+          <div class="reward-card glass-panel">
+            <div class="reward-info">
+              <span class="reward-name">Day Pass on Chores</span>
+              <span class="reward-cost">Cost: 1 Silver Token 🥈</span>
+            </div>
+            <button class="redeem-btn" data-tier="silver" data-prize="Day Pass on Chores">Redeem</button>
+          </div>
+          <div class="reward-card glass-panel">
+            <div class="reward-info">
+              <span class="reward-name">Breakfast in Bed</span>
+              <span class="reward-cost">Cost: 1 Silver Token 🥈</span>
+            </div>
+            <button class="redeem-btn" data-tier="silver" data-prize="Breakfast in Bed">Redeem</button>
+          </div>
+        </div>
+
+        <!-- Bronze Tier -->
+        <div class="store-tier">
+          <div class="tier-header bronze">🥉 Bronze Tier Rewards</div>
+          <div class="reward-card glass-panel">
+            <div class="reward-info">
+              <span class="reward-name">15-Min Foot or Back Rub</span>
+              <span class="reward-cost">Cost: 1 Bronze Token 🥉</span>
+            </div>
+            <button class="redeem-btn" data-tier="bronze" data-prize="15-Min Foot or Back Rub">Redeem</button>
+          </div>
+          <div class="reward-card glass-panel">
+            <div class="reward-info">
+              <span class="reward-name">Pick Tonight's Movie</span>
+              <span class="reward-cost">Cost: 1 Bronze Token 🥉</span>
+            </div>
+            <button class="redeem-btn" data-tier="bronze" data-prize="Pick Tonight's Movie">Redeem</button>
+          </div>
+          <div class="reward-card glass-panel">
+            <div class="reward-info">
+              <span class="reward-name">Late Night Snack Run</span>
+              <span class="reward-cost">Cost: 1 Bronze Token 🥉</span>
+            </div>
+            <button class="redeem-btn" data-tier="bronze" data-prize="Late Night Snack Run">Redeem</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Subtle Footer with Hidden Admin Entrance -->
+    <footer class="app-footer">
+      <button id="adminSecretBtn" class="admin-secret-btn" aria-label="Husband Dashboard">
+        <span>🔒</span>
+        <span style="font-size:0.75rem;">Admin</span>
+      </button>
+    </footer>
+
+    <!-- Bottom Navigation Bar -->
+    <nav class="view-tabs">
+      <button class="tab-btn active" data-tab="viewRoutine">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+        <span>Routine</span>
+      </button>
+      <button class="tab-btn" data-tab="viewSlots">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        <span>Slots</span>
+        <div id="spinsBadge" class="badge-spins" style="display:none;">0</div>
+      </button>
+      <button class="tab-btn" data-tab="viewStore">
+        <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
+        <span>Store</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- PIN LOCK SCREEN OVERLAY -->
+  <div id="lockScreen" class="lock-screen" style="display:none;">
+    <div class="lock-avatar">🌙</div>
+    <div id="lockPromptTitle" class="lock-title">Enter Passcode</div>
+    <div id="lockPromptSub" class="lock-subtitle">Unlock your nighttime dashboard</div>
+
+    <div class="pin-dots">
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+      <div class="pin-dot"></div>
+    </div>
+
+    <div class="pin-keypad">
+      <button class="key-btn" data-num="1">1</button>
+      <button class="key-btn" data-num="2">2</button>
+      <button class="key-btn" data-num="3">3</button>
+      <button class="key-btn" data-num="4">4</button>
+      <button class="key-btn" data-num="5">5</button>
+      <button class="key-btn" data-num="6">6</button>
+      <button class="key-btn" data-num="7">7</button>
+      <button class="key-btn" data-num="8">8</button>
+      <button class="key-btn" data-num="9">9</button>
+      <button class="key-btn text-key" id="pinClearBtn">Clear</button>
+      <button class="key-btn" data-num="0">0</button>
+      <button class="key-btn text-key" id="pinDeleteBtn">⌫</button>
+    </div>
+
+    <label class="remember-device-toggle">
+      <input type="checkbox" id="rememberDeviceCheck">
+      <span>Remember this device</span>
+    </label>
+  </div>
+
+  <!-- VOUCHER CELEBRATION MODAL -->
+  <div id="voucherModal" class="modal-overlay">
+    <div class="modal-card glass-panel">
+      <button class="modal-close-btn" id="closeVoucherBtn">✕</button>
+      <div class="voucher-card">
+        <div style="font-size:2.5rem;">🎉</div>
+        <div id="voucherRewardName" class="voucher-title">Reward Name</div>
+        <div class="voucher-instructions">"Redeemed! Show this voucher to husband."</div>
+        <div id="voucherTimestamp" class="voucher-code">Sept 21, 2026 - 10:15 PM</div>
+      </div>
+      <button class="primary-btn claim-btn" id="confirmVoucherBtn">Awesome!</button>
+    </div>
+  </div>
+
+  <!-- SLOT WIN MODAL -->
+  <div id="winModal" class="modal-overlay">
+    <div class="modal-card glass-panel">
+      <div class="win-popup">
+        <div id="winIcon" class="win-icon">🥇</div>
+        <div id="winTitle" style="font-size:1.4rem; font-weight:800; color:#fff;">Winner!</div>
+        <div id="winDesc" style="color:var(--text-secondary); font-size:0.9rem;">You won a Gold Token!</div>
+        <button class="primary-btn claim-btn" id="closeWinBtn" style="margin-top:10px;">Claim Token</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUSBAND / ADMIN DASHBOARD MODAL -->
+  <div id="adminModal" class="modal-overlay">
+    <div class="modal-card admin-drawer glass-panel">
+      <div class="admin-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span>👑</span>
+          <span style="font-weight:700; font-size:1rem; color:#fff;">Husband Admin Panel</span>
+        </div>
+        <button class="modal-close-btn" id="closeAdminBtn">✕</button>
+      </div>
+
+      <!-- Pending Vouchers Section -->
+      <div class="admin-section">
+        <div class="admin-subheading">Pending Vouchers to Fulfill</div>
+        <div id="pendingVouchersList" style="display:flex; flex-direction:column; gap:8px;">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- Completed History Section -->
+      <div class="admin-section">
+        <div class="admin-subheading">Completed Voucher History</div>
+        <div id="completedVouchersList" style="display:flex; flex-direction:column; gap:8px; max-height:140px; overflow-y:auto;">
+          <!-- Injected via JS -->
+        </div>
+      </div>
+
+      <!-- Manual Overrides -->
+      <div class="admin-section">
+        <div class="admin-subheading">Manual Overrides & Testing</div>
+        <div class="admin-controls-grid">
+          <button class="admin-btn" id="adminAddSpinBtn">+5 Spins</button>
+          <button class="admin-btn" id="adminAddGoldBtn">+1 Gold Token</button>
+          <button class="admin-btn" id="adminAddSilverBtn">+1 Silver Token</button>
+          <button class="admin-btn" id="adminAddBronzeBtn">+1 Bronze Token</button>
+          <button class="admin-btn" id="adminUnlockTasksBtn">Unlock All Tasks</button>
+          <button class="admin-btn" id="adminCompleteTasksBtn">Check All Tasks</button>
+          <button class="admin-btn" id="adminResetRoutineBtn">Reset Routine State</button>
+          <button class="admin-btn" id="adminSimulateCutoffBtn">Simulate Past Cutoff</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
