@@ -13,16 +13,64 @@ const DEFAULT_TASKS = [
   { id: 't5', title: 'Drink water & take nighttime medicine', completed: false, lockedOut: false }
 ];
 
-// Weighted Odds for 1 spin:
-// 1/500 (0.002) = Gold (Grand)
-// 1/75 (~0.01333) = Silver (Major)
-// 1/15 (~0.06667) = Bronze (Minor)
-// Remainder (~0.918) = No Token (Consolation)
+// Special Non-Transactional Rewards priced in Coins
+const STORE_REWARDS = [
+  {
+    id: 'rew_target',
+    name: 'Target 1-Finger Challenge',
+    cost: 500,
+    desc: 'The ultimate jackpot run! Go down aisles and pick whatever you want.'
+  },
+  {
+    id: 'rew_spa',
+    name: 'Spa & Pamper Day',
+    cost: 350,
+    desc: 'Full luxury pamper day — professional massage or manicure & pedicure.'
+  },
+  {
+    id: 'rew_getaway',
+    name: 'Weekend Getaway Trip',
+    cost: 300,
+    desc: 'He plans, packs, and drives a fun weekend road trip destination of your choice.'
+  },
+  {
+    id: 'rew_dinner',
+    name: 'Fancy Dinner Date Night',
+    cost: 250,
+    desc: 'Dressed-up dinner at your dream restaurant, full courses & drinks, his treat.'
+  },
+  {
+    id: 'rew_massage',
+    name: '30-Min Full Dedicated Massage',
+    cost: 250,
+    desc: 'Uninterrupted relaxing massage with essential oils and calming music.'
+  },
+  {
+    id: 'rew_chores',
+    name: 'Full Day Pass on Chores',
+    cost: 200,
+    desc: 'Husband takes care of 100% of all household chores and cleaning for the day.'
+  },
+  {
+    id: 'rew_spree',
+    name: 'Shopping Spree Treat',
+    cost: 200,
+    desc: 'Guilt-free shopping spree to your favorite boutique or store.'
+  },
+  {
+    id: 'rew_gourmet',
+    name: 'Gourmet Dinner & Breakfast in Bed',
+    cost: 150,
+    desc: 'Cooked-from-scratch multi-course dinner followed by breakfast in bed next morning.'
+  }
+];
+
+// Slot Symbols & Payout Configuration
 const SLOT_SYMBOLS = {
-  GOLD: '🥇',
-  SILVER: '🥈',
-  BRONZE: '🥉',
-  CONSOLATION: ['🌙', '⭐', '✨', '💤', '🧸', '☕']
+  JACKPOT: '💎',
+  BIG_WIN: '⭐',
+  LUCKY: '🌙',
+  FILLERS: ['✨', '💤', '🧸', '☕', '🌸']
 };
 
 // --- AUDIO SYNTHESIS (Web Audio API) ---
@@ -109,10 +157,10 @@ class AppState {
       adminPin: DEFAULT_ADMIN_PIN,
       rememberDevice: false,
       isUnlocked: false,
-      tokens: { gold: 0, silver: 0, bronze: 0 },
+      coins: 0,
       spinsRemaining: 0,
       tasks: JSON.parse(JSON.stringify(DEFAULT_TASKS)),
-      vouchers: [], // { id, name, tier, timestamp, fulfilled, fulfilledAt }
+      vouchers: [], // { id, name, cost, timestamp, fulfilled, fulfilledAt }
       lastCycleDate: null,
       claimedToday: false,
       simulatedCutoff: false
@@ -120,7 +168,15 @@ class AppState {
 
     if (raw) {
       try {
-        this.data = Object.assign(defaultData, JSON.parse(raw));
+        const parsed = JSON.parse(raw);
+        // Backwards compatibility migration from old token system
+        if (parsed.tokens && typeof parsed.coins === 'undefined') {
+          const goldVal = (parsed.tokens.gold || 0) * 250;
+          const silverVal = (parsed.tokens.silver || 0) * 100;
+          parsed.coins = goldVal + silverVal;
+          delete parsed.tokens;
+        }
+        this.data = Object.assign(defaultData, parsed);
       } catch (e) {
         this.data = defaultData;
       }
@@ -141,7 +197,7 @@ class RoutineApp {
   constructor() {
     this.activeTab = 'viewRoutine';
     this.pinBuffer = '';
-    this.pinMode = 'USER'; // 'USER' or 'ADMIN'
+    this.pinMode = 'USER';
     this.isSpinning = false;
 
     this.cacheDOMElements();
@@ -158,10 +214,8 @@ class RoutineApp {
     this.tabButtons = document.querySelectorAll('.tab-btn');
     this.viewSections = document.querySelectorAll('.view-section');
 
-    // Header & Inventory
-    this.goldCount = document.getElementById('goldCount');
-    this.silverCount = document.getElementById('silverCount');
-    this.bronzeCount = document.getElementById('bronzeCount');
+    // Header & Balance
+    this.coinCount = document.getElementById('coinCount');
     this.countdownTimer = document.getElementById('countdownTimer');
     this.countdownStatusText = document.getElementById('countdownStatusText');
     this.countdownCard = document.getElementById('countdownCard');
@@ -184,7 +238,7 @@ class RoutineApp {
     ];
 
     // Store
-    this.redeemButtons = document.querySelectorAll('.redeem-btn');
+    this.storeList = document.getElementById('storeList');
 
     // Lock Screen
     this.lockScreen = document.getElementById('lockScreen');
@@ -217,9 +271,9 @@ class RoutineApp {
 
     // Admin controls
     this.adminAddSpinBtn = document.getElementById('adminAddSpinBtn');
-    this.adminAddGoldBtn = document.getElementById('adminAddGoldBtn');
-    this.adminAddSilverBtn = document.getElementById('adminAddSilverBtn');
-    this.adminAddBronzeBtn = document.getElementById('adminAddBronzeBtn');
+    this.adminAdd50CoinsBtn = document.getElementById('adminAdd50CoinsBtn');
+    this.adminAdd200CoinsBtn = document.getElementById('adminAdd200CoinsBtn');
+    this.adminDeduct50CoinsBtn = document.getElementById('adminDeduct50CoinsBtn');
     this.adminUnlockTasksBtn = document.getElementById('adminUnlockTasksBtn');
     this.adminCompleteTasksBtn = document.getElementById('adminCompleteTasksBtn');
     this.adminResetRoutineBtn = document.getElementById('adminResetRoutineBtn');
@@ -245,7 +299,7 @@ class RoutineApp {
     // Lock screen actions
     this.manualLockBtn.addEventListener('click', () => this.lockApp());
     document.querySelectorAll('.key-btn[data-num]').forEach(btn => {
-      btn.addEventListener('click', (e) => {
+      btn.addEventListener('click', () => {
         sounds.playTap();
         this.handlePinInput(btn.getAttribute('data-num'));
       });
@@ -257,15 +311,6 @@ class RoutineApp {
     this.pinDeleteBtn.addEventListener('click', () => {
       sounds.playTap();
       this.deletePin();
-    });
-
-    // Store Redemptions
-    this.redeemButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const tier = btn.getAttribute('data-tier');
-        const prize = btn.getAttribute('data-prize');
-        this.handleRedemption(tier, prize);
-      });
     });
 
     // Modals
@@ -286,18 +331,18 @@ class RoutineApp {
       state.save();
       this.render();
     });
-    this.adminAddGoldBtn.addEventListener('click', () => {
-      state.data.tokens.gold += 1;
+    this.adminAdd50CoinsBtn.addEventListener('click', () => {
+      state.data.coins += 50;
       state.save();
       this.render();
     });
-    this.adminAddSilverBtn.addEventListener('click', () => {
-      state.data.tokens.silver += 1;
+    this.adminAdd200CoinsBtn.addEventListener('click', () => {
+      state.data.coins += 200;
       state.save();
       this.render();
     });
-    this.adminAddBronzeBtn.addEventListener('click', () => {
-      state.data.tokens.bronze += 1;
+    this.adminDeduct50CoinsBtn.addEventListener('click', () => {
+      state.data.coins = Math.max(0, state.data.coins - 50);
       state.save();
       this.render();
     });
@@ -361,7 +406,6 @@ class RoutineApp {
   }
 
   // --- TIME LOCK & DAILY CYCLE LOGIC ---
-  // The daily routine cycle runs from 4:00 AM to the next day 4:00 AM.
   getCurrentCycleKey(now = new Date()) {
     const cycleDate = new Date(now);
     if (cycleDate.getHours() < RESET_HOUR) {
@@ -659,57 +703,54 @@ class RoutineApp {
     state.save();
     this.render();
 
-    // Determine outcome based on exact specified weighted odds
-    // 1 in 500 = Gold (0.002)
-    // 1 in 75 = Silver (0.01333333...)
-    // 1 in 15 = Bronze (0.06666666...)
-    // Remainder = No Token (~0.918)
+    // Odds:
+    // 1 in 100 (0.01) = 3 Diamonds (+250 Coins Jackpot)
+    // 1 in 20 (0.05) = 3 Stars (+50 Coins Big Win)
+    // 1 in 5 (0.20) = 3 Moons (+20 Coins Lucky Drop)
+    // Remaining (~0.74) = Mixed Consolation (0 Coins)
     const roll = Math.random();
-    const goldThreshold = 1 / 500; // 0.002
-    const silverThreshold = goldThreshold + (1 / 75); // ~0.015333
-    const bronzeThreshold = silverThreshold + (1 / 15); // ~0.082
+    const jackpotThreshold = 1 / 100; // 0.01
+    const bigWinThreshold = jackpotThreshold + (1 / 20); // 0.06
+    const luckyThreshold = bigWinThreshold + (1 / 5); // 0.26
 
-    let resultTier = null;
+    let winData = null;
     let finalSymbols = [];
 
-    if (roll < goldThreshold) {
-      resultTier = 'gold';
-      finalSymbols = [SLOT_SYMBOLS.GOLD, SLOT_SYMBOLS.GOLD, SLOT_SYMBOLS.GOLD];
-    } else if (roll < silverThreshold) {
-      resultTier = 'silver';
-      finalSymbols = [SLOT_SYMBOLS.SILVER, SLOT_SYMBOLS.SILVER, SLOT_SYMBOLS.SILVER];
-    } else if (roll < bronzeThreshold) {
-      resultTier = 'bronze';
-      finalSymbols = [SLOT_SYMBOLS.BRONZE, SLOT_SYMBOLS.BRONZE, SLOT_SYMBOLS.BRONZE];
+    if (roll < jackpotThreshold) {
+      winData = { coins: 250, title: 'JACKPOT!', desc: '1 in 100 Chance! You won 250 Coins!', icon: '💎' };
+      finalSymbols = [SLOT_SYMBOLS.JACKPOT, SLOT_SYMBOLS.JACKPOT, SLOT_SYMBOLS.JACKPOT];
+    } else if (roll < bigWinThreshold) {
+      winData = { coins: 50, title: 'BIG WIN!', desc: '3 Stars! You won 50 Coins!', icon: '⭐' };
+      finalSymbols = [SLOT_SYMBOLS.BIG_WIN, SLOT_SYMBOLS.BIG_WIN, SLOT_SYMBOLS.BIG_WIN];
+    } else if (roll < luckyThreshold) {
+      winData = { coins: 20, title: 'LUCKY DROP!', desc: '3 Moons! You won 20 Coins!', icon: '🌙' };
+      finalSymbols = [SLOT_SYMBOLS.LUCKY, SLOT_SYMBOLS.LUCKY, SLOT_SYMBOLS.LUCKY];
     } else {
-      // Consolation: randomized non-matching symbols
-      const icons = SLOT_SYMBOLS.CONSOLATION;
-      const s1 = icons[Math.floor(Math.random() * icons.length)];
-      let s2 = icons[Math.floor(Math.random() * icons.length)];
-      let s3 = icons[Math.floor(Math.random() * icons.length)];
-      // Prevent 3-of-a-kind on consolation
+      // Consolation non-matching symbols
+      const pool = [SLOT_SYMBOLS.JACKPOT, SLOT_SYMBOLS.BIG_WIN, SLOT_SYMBOLS.LUCKY, ...SLOT_SYMBOLS.FILLERS];
+      const s1 = pool[Math.floor(Math.random() * pool.length)];
+      let s2 = pool[Math.floor(Math.random() * pool.length)];
+      let s3 = pool[Math.floor(Math.random() * pool.length)];
       if (s1 === s2 && s2 === s3) {
         s3 = '☕';
       }
       finalSymbols = [s1, s2, s3];
     }
 
-    this.animateReels(finalSymbols, resultTier);
+    this.animateReels(finalSymbols, winData);
   }
 
-  animateReels(finalSymbols, resultTier) {
-    const totalSteps = 22;
+  animateReels(finalSymbols, winData) {
     const baseDuration = 1800; // 1.8s
     
-    // Sound interval
     const tickInterval = setInterval(() => {
       sounds.playReelTick();
     }, 110);
 
-    // Rapidly change symbols during spinning
+    const pool = [SLOT_SYMBOLS.JACKPOT, SLOT_SYMBOLS.BIG_WIN, SLOT_SYMBOLS.LUCKY, ...SLOT_SYMBOLS.FILLERS];
     const spinInterval = setInterval(() => {
       this.strips.forEach(strip => {
-        const randomSymbol = SLOT_SYMBOLS.CONSOLATION[Math.floor(Math.random() * SLOT_SYMBOLS.CONSOLATION.length)];
+        const randomSymbol = pool[Math.floor(Math.random() * pool.length)];
         strip.innerHTML = `<div class="reel-item">${randomSymbol}</div>`;
       });
     }, 70);
@@ -717,7 +758,6 @@ class RoutineApp {
     // Stop reels one by one
     [0, 1, 2].forEach(index => {
       setTimeout(() => {
-        // Stop specific reel
         this.strips[index].innerHTML = `<div class="reel-item">${finalSymbols[index]}</div>`;
         sounds.playTap();
 
@@ -725,35 +765,25 @@ class RoutineApp {
           clearInterval(spinInterval);
           clearInterval(tickInterval);
           this.isSpinning = false;
-          this.onSpinFinished(resultTier);
+          this.onSpinFinished(winData);
         }
       }, baseDuration + index * 400);
     });
   }
 
-  onSpinFinished(resultTier) {
+  onSpinFinished(winData) {
     this.render();
 
-    if (resultTier) {
+    if (winData) {
       sounds.playWinSound();
-      if (resultTier === 'gold') {
-        state.data.tokens.gold += 1;
-        this.winIcon.textContent = '🥇';
-        this.winTitle.textContent = 'GRAND PRIZE!';
-        this.winDesc.textContent = '1 in 500 Chance! You won a Gold Token!';
-      } else if (resultTier === 'silver') {
-        state.data.tokens.silver += 1;
-        this.winIcon.textContent = '🥈';
-        this.winTitle.textContent = 'MAJOR PRIZE!';
-        this.winDesc.textContent = '1 in 75 Chance! You won a Silver Token!';
-      } else if (resultTier === 'bronze') {
-        state.data.tokens.bronze += 1;
-        this.winIcon.textContent = '🥉';
-        this.winTitle.textContent = 'PRIZE WINNER!';
-        this.winDesc.textContent = '1 in 15 Chance! You won a Bronze Token!';
-      }
+      state.data.coins += winData.coins;
       state.save();
       this.render();
+
+      this.winIcon.textContent = winData.icon;
+      this.winTitle.textContent = winData.title;
+      this.winDesc.textContent = winData.desc;
+
       setTimeout(() => {
         this.winModal.classList.add('active');
       }, 200);
@@ -761,21 +791,46 @@ class RoutineApp {
   }
 
   // --- REWARD STORE ---
-  handleRedemption(tier, prizeName) {
+  renderStore() {
+    this.storeList.innerHTML = '';
+    STORE_REWARDS.forEach(reward => {
+      const card = document.createElement('div');
+      card.className = 'reward-card glass-panel';
+
+      const canAfford = state.data.coins >= reward.cost;
+
+      card.innerHTML = `
+        <div class="reward-info">
+          <span class="reward-name">${reward.name}</span>
+          <span class="reward-desc">${reward.desc}</span>
+          <span class="reward-cost">🪙 ${reward.cost} Coins</span>
+        </div>
+        <button class="redeem-btn ${canAfford ? 'can-afford' : ''}" ${canAfford ? '' : 'disabled'}>
+          Redeem
+        </button>
+      `;
+
+      card.querySelector('.redeem-btn').addEventListener('click', () => {
+        this.handleRedemption(reward);
+      });
+
+      this.storeList.appendChild(card);
+    });
+  }
+
+  handleRedemption(reward) {
     sounds.playTap();
-    if (state.data.tokens[tier] < 1) return;
+    if (state.data.coins < reward.cost) return;
 
-    // Deduct token
-    state.data.tokens[tier] -= 1;
+    state.data.coins -= reward.cost;
 
-    // Create pending voucher
     const now = new Date();
     const timestampStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' - ' +
                          now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
     const voucher = {
       id: 'v_' + Date.now(),
-      name: prizeName,
-      tier: tier,
+      name: reward.name,
+      cost: reward.cost,
       timestamp: timestampStr,
       fulfilled: false,
       fulfilledAt: null
@@ -787,9 +842,8 @@ class RoutineApp {
     sounds.playWinSound();
     this.render();
 
-    // Show celebration voucher modal
-    this.voucherRewardName.textContent = prizeName;
-    this.voucherTimestamp.textContent = `Redeemed: ${timestampStr}`;
+    this.voucherRewardName.textContent = reward.name;
+    this.voucherTimestamp.textContent = `Redeemed: ${timestampStr} (${reward.cost} Coins)`;
     this.voucherModal.classList.add('active');
   }
 
@@ -809,7 +863,7 @@ class RoutineApp {
         item.className = 'voucher-item';
         item.innerHTML = `
           <div class="voucher-meta">
-            <span class="voucher-item-name">${v.name}</span>
+            <span class="voucher-item-name">${v.name} (${v.cost || 'Special'} Coins)</span>
             <span class="voucher-item-time">Redeemed: ${v.timestamp}</span>
           </div>
           <button class="fulfill-btn" data-id="${v.id}">Mark Fulfilled</button>
@@ -848,10 +902,8 @@ class RoutineApp {
 
   // --- GENERAL RENDER ---
   render() {
-    // Balances
-    this.goldCount.textContent = state.data.tokens.gold;
-    this.silverCount.textContent = state.data.tokens.silver;
-    this.bronzeCount.textContent = state.data.tokens.bronze;
+    // Balance
+    this.coinCount.textContent = `${state.data.coins} Coins`;
 
     // Spins
     this.spinsRemaining.textContent = state.data.spinsRemaining;
@@ -864,19 +916,8 @@ class RoutineApp {
       this.spinBtn.disabled = true;
     }
 
-    // Store affordances
-    this.redeemButtons.forEach(btn => {
-      const tier = btn.getAttribute('data-tier');
-      const canAfford = state.data.tokens[tier] >= 1;
-      btn.disabled = !canAfford;
-      if (canAfford) {
-        btn.classList.add('can-afford');
-      } else {
-        btn.classList.remove('can-afford');
-      }
-    });
-
-    // Routine Tasks
+    // Store & Checklist
+    this.renderStore();
     this.renderTasks();
     this.updateClaimButtonState();
   }

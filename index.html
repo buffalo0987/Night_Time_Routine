@@ -32,28 +32,17 @@
         </div>
       </div>
 
-      <!-- Live Token Inventory Bar -->
-      <div class="inventory-bar glass-panel">
-        <div class="token-pill gold">
-          <span class="token-icon">🥇</span>
-          <div class="token-data">
-            <span class="token-label">Gold</span>
-            <span id="goldCount" class="token-count">0</span>
+      <!-- Live Coin Inventory Widget -->
+      <div class="coin-inventory-bar glass-panel">
+        <div class="coin-pill-main">
+          <span class="coin-large-icon">🪙</span>
+          <div class="coin-info">
+            <span class="coin-label">Reward Balance</span>
+            <span id="coinCount" class="coin-balance">0 Coins</span>
           </div>
         </div>
-        <div class="token-pill silver">
-          <span class="token-icon">🥈</span>
-          <div class="token-data">
-            <span class="token-label">Silver</span>
-            <span id="silverCount" class="token-count">0</span>
-          </div>
-        </div>
-        <div class="token-pill bronze">
-          <span class="token-icon">🥉</span>
-          <div class="token-data">
-            <span class="token-label">Bronze</span>
-            <span id="bronzeCount" class="token-count">0</span>
-          </div>
+        <div class="coin-sub-indicator">
+          <span>Midnight Vault</span>
         </div>
       </div>
 
@@ -62,7 +51,7 @@
         <div class="countdown-content">
           <div class="countdown-label">
             <span>⏰</span>
-            <span id="countdownStatusText">Time left for tonight's routine:</span>
+            <span id="countdownStatusText">Time left for tonight:</span>
           </div>
           <div id="countdownTimer" class="countdown-val">Calculating...</div>
         </div>
@@ -125,92 +114,31 @@
 
         <!-- Slot Odds Card -->
         <div class="odds-card glass-panel">
-          <div class="odds-title">Token Drop Probabilities</div>
+          <div class="odds-title">Slot Coin Payouts</div>
           <div class="odds-row">
-            <span class="odds-tier">🥇 Gold Token (Grand)</span>
-            <span class="odds-chance">1 in 500 (0.2%)</span>
+            <span class="odds-tier">💎 3 Diamonds (Jackpot)</span>
+            <span class="odds-chance">+250 Coins (1 in 100)</span>
           </div>
           <div class="odds-row">
-            <span class="odds-tier">🥈 Silver Token (Major)</span>
-            <span class="odds-chance">1 in 75 (1.33%)</span>
+            <span class="odds-tier">⭐ 3 Stars (Big Win)</span>
+            <span class="odds-chance">+50 Coins (1 in 20)</span>
           </div>
           <div class="odds-row">
-            <span class="odds-tier">🥉 Bronze Token (Minor)</span>
-            <span class="odds-chance">1 in 15 (6.67%)</span>
+            <span class="odds-tier">🌙 3 Moons (Lucky Drop)</span>
+            <span class="odds-chance">+20 Coins (1 in 5)</span>
           </div>
           <div class="odds-row">
-            <span class="odds-tier">⚪ No Token (Consolation)</span>
-            <span class="odds-chance">~91.8%</span>
+            <span class="odds-tier">⚪ Mixed Symbols</span>
+            <span class="odds-chance">Try again! (~74%)</span>
           </div>
         </div>
       </section>
 
       <!-- TAB 3: REWARD STORE -->
       <section id="viewStore" class="view-section">
-        <div class="section-title">Reward Store</div>
-        
-        <!-- Gold Tier -->
-        <div class="store-tier">
-          <div class="tier-header gold">🥇 Gold Tier Rewards</div>
-          <div class="reward-card glass-panel">
-            <div class="reward-info">
-              <span class="reward-name">Target 1 finger challenge</span>
-              <span class="reward-cost">Cost: 1 Gold Token 🥇</span>
-            </div>
-            <button class="redeem-btn" data-tier="gold" data-prize="Target 1 finger challenge">Redeem</button>
-          </div>
-        </div>
-
-        <!-- Silver Tier -->
-        <div class="store-tier">
-          <div class="tier-header silver">🥈 Silver Tier Rewards</div>
-          <div class="reward-card glass-panel">
-            <div class="reward-info">
-              <span class="reward-name">30-Min Full Massage</span>
-              <span class="reward-cost">Cost: 1 Silver Token 🥈</span>
-            </div>
-            <button class="redeem-btn" data-tier="silver" data-prize="30-Min Full Massage">Redeem</button>
-          </div>
-          <div class="reward-card glass-panel">
-            <div class="reward-info">
-              <span class="reward-name">Day Pass on Chores</span>
-              <span class="reward-cost">Cost: 1 Silver Token 🥈</span>
-            </div>
-            <button class="redeem-btn" data-tier="silver" data-prize="Day Pass on Chores">Redeem</button>
-          </div>
-          <div class="reward-card glass-panel">
-            <div class="reward-info">
-              <span class="reward-name">Breakfast in Bed</span>
-              <span class="reward-cost">Cost: 1 Silver Token 🥈</span>
-            </div>
-            <button class="redeem-btn" data-tier="silver" data-prize="Breakfast in Bed">Redeem</button>
-          </div>
-        </div>
-
-        <!-- Bronze Tier -->
-        <div class="store-tier">
-          <div class="tier-header bronze">🥉 Bronze Tier Rewards</div>
-          <div class="reward-card glass-panel">
-            <div class="reward-info">
-              <span class="reward-name">15-Min Foot or Back Rub</span>
-              <span class="reward-cost">Cost: 1 Bronze Token 🥉</span>
-            </div>
-            <button class="redeem-btn" data-tier="bronze" data-prize="15-Min Foot or Back Rub">Redeem</button>
-          </div>
-          <div class="reward-card glass-panel">
-            <div class="reward-info">
-              <span class="reward-name">Pick Tonight's Movie</span>
-              <span class="reward-cost">Cost: 1 Bronze Token 🥉</span>
-            </div>
-            <button class="redeem-btn" data-tier="bronze" data-prize="Pick Tonight's Movie">Redeem</button>
-          </div>
-          <div class="reward-card glass-panel">
-            <div class="reward-info">
-              <span class="reward-name">Late Night Snack Run</span>
-              <span class="reward-cost">Cost: 1 Bronze Token 🥉</span>
-            </div>
-            <button class="redeem-btn" data-tier="bronze" data-prize="Late Night Snack Run">Redeem</button>
-          </div>
+        <div class="section-title">Special Rewards & Treats</div>
+        <div id="storeList" class="store-list">
+          <!-- Populated by JavaScript -->
         </div>
       </section>
     </main>
@@ -245,7 +173,7 @@
   <div id="lockScreen" class="lock-screen" style="display:none;">
     <div class="lock-avatar">🌙</div>
     <div id="lockPromptTitle" class="lock-title">Enter Passcode</div>
-    <div id="lockPromptSub" class="lock-subtitle">Unlock your nighttime dashboard</div>
+    <div id="lockPromptSub" class="lock-subtitle">Unlock your nighttime routine</div>
 
     <div class="pin-dots">
       <div class="pin-dot"></div>
@@ -293,10 +221,10 @@
   <div id="winModal" class="modal-overlay">
     <div class="modal-card glass-panel">
       <div class="win-popup">
-        <div id="winIcon" class="win-icon">🥇</div>
-        <div id="winTitle" style="font-size:1.4rem; font-weight:800; color:#fff;">Winner!</div>
-        <div id="winDesc" style="color:var(--text-secondary); font-size:0.9rem;">You won a Gold Token!</div>
-        <button class="primary-btn claim-btn" id="closeWinBtn" style="margin-top:10px;">Claim Token</button>
+        <div id="winIcon" class="win-icon">💎</div>
+        <div id="winTitle" style="font-size:1.4rem; font-weight:800; color:#fff;">Jackpot!</div>
+        <div id="winDesc" style="color:var(--text-secondary); font-size:0.9rem;">You won 250 Coins!</div>
+        <button class="primary-btn claim-btn" id="closeWinBtn" style="margin-top:10px;">Awesome!</button>
       </div>
     </div>
   </div>
@@ -333,9 +261,9 @@
         <div class="admin-subheading">Manual Overrides & Testing</div>
         <div class="admin-controls-grid">
           <button class="admin-btn" id="adminAddSpinBtn">+5 Spins</button>
-          <button class="admin-btn" id="adminAddGoldBtn">+1 Gold Token</button>
-          <button class="admin-btn" id="adminAddSilverBtn">+1 Silver Token</button>
-          <button class="admin-btn" id="adminAddBronzeBtn">+1 Bronze Token</button>
+          <button class="admin-btn" id="adminAdd50CoinsBtn">+50 Coins</button>
+          <button class="admin-btn" id="adminAdd200CoinsBtn">+200 Coins</button>
+          <button class="admin-btn" id="adminDeduct50CoinsBtn">-50 Coins</button>
           <button class="admin-btn" id="adminUnlockTasksBtn">Unlock All Tasks</button>
           <button class="admin-btn" id="adminCompleteTasksBtn">Check All Tasks</button>
           <button class="admin-btn" id="adminResetRoutineBtn">Reset Routine State</button>
