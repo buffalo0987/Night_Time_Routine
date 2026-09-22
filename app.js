@@ -13,55 +13,49 @@ const DEFAULT_TASKS = [
   { id: 't5', title: 'Drink water & take nighttime medicine', completed: false, lockedOut: false }
 ];
 
-// Special Non-Transactional Rewards priced in Coins
+// Special Non-Transactional Rewards priced proportional to dollar investment
 const STORE_REWARDS = [
+  {
+    id: 'rew_getaway',
+    name: 'Weekend Getaway Trip',
+    cost: 1200,
+    desc: 'Hotel, dining, gas & activities — he plans, packs, and funds a full weekend road trip.'
+  },
   {
     id: 'rew_target',
     name: 'Target 1-Finger Challenge',
     cost: 500,
-    desc: 'The ultimate jackpot run! Go down aisles and pick whatever you want.'
+    desc: 'Walk down aisles, point 1 finger, and whatever you touch goes in the cart — his treat!'
   },
   {
     id: 'rew_spa',
     name: 'Spa & Pamper Day',
-    cost: 350,
-    desc: 'Full luxury pamper day — professional massage or manicure & pedicure.'
-  },
-  {
-    id: 'rew_getaway',
-    name: 'Weekend Getaway Trip',
-    cost: 300,
-    desc: 'He plans, packs, and drives a fun weekend road trip destination of your choice.'
+    cost: 400,
+    desc: 'Professional luxury mani/pedi, facial, or full-body spa appointment booked & paid.'
   },
   {
     id: 'rew_dinner',
     name: 'Fancy Dinner Date Night',
     cost: 250,
-    desc: 'Dressed-up dinner at your dream restaurant, full courses & drinks, his treat.'
+    desc: 'Dressed-up dinner at your dream restaurant, full appetizers, entrees & dessert on him.'
   },
   {
     id: 'rew_massage',
     name: '30-Min Full Dedicated Massage',
-    cost: 250,
-    desc: 'Uninterrupted relaxing massage with essential oils and calming music.'
+    cost: 150,
+    desc: 'Uninterrupted relaxing massage with soothing oils, candlelit ambiance & relaxing music.'
   },
   {
     id: 'rew_chores',
     name: 'Full Day Pass on Chores',
-    cost: 200,
-    desc: 'Husband takes care of 100% of all household chores and cleaning for the day.'
-  },
-  {
-    id: 'rew_spree',
-    name: 'Shopping Spree Treat',
-    cost: 200,
-    desc: 'Guilt-free shopping spree to your favorite boutique or store.'
+    cost: 120,
+    desc: 'Husband handles 100% of all household chores, dishes, and cleaning for the entire day.'
   },
   {
     id: 'rew_gourmet',
     name: 'Gourmet Dinner & Breakfast in Bed',
-    cost: 150,
-    desc: 'Cooked-from-scratch multi-course dinner followed by breakfast in bed next morning.'
+    cost: 100,
+    desc: 'Cooked-from-scratch multi-course dinner followed by breakfast in bed the next morning.'
   }
 ];
 
