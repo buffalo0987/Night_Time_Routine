@@ -372,9 +372,21 @@ class RoutineApp {
   initServiceWorker() {
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js').catch(err => {
+        navigator.serviceWorker.register('service-worker.js').then((registration) => {
+          // Check for updates every time she opens the app
+          registration.update();
+        }).catch(err => {
           console.log('SW registration error:', err);
         });
+      });
+
+      // When returning from background on iOS Safari
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.getRegistration().then(reg => {
+            if (reg) reg.update();
+          });
+        }
       });
     }
   }
