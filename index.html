@@ -141,102 +141,103 @@
           <span style="font-size:0.75rem; color:var(--text-muted);">Tap Meeko to pet!</span>
         </div>
 
-        <!-- The Interactive Room Container -->
-        <div class="room-container" id="meekoRoom">
-          <div class="room-stars" id="roomStars"></div>
-          <div class="room-floor"></div>
-          <div class="room-rug"></div>
+        <!-- Two-Stage Meeko World Container -->
+        <div class="meeko-world" id="meekoWorld">
 
-          <!-- Milk Carton House -->
-          <div class="milk-carton" id="milkCartonHouse">
-            <div class="carton-fairy-lights" id="fairyLightsDecor">
-              <div class="fairy-bulb"></div>
-              <div class="fairy-bulb"></div>
-              <div class="fairy-bulb"></div>
-              <div class="fairy-bulb"></div>
-              <div class="fairy-bulb"></div>
-            </div>
-            <div class="carton-top-crease">OPEN ➔</div>
-            <div class="carton-roof">
-              <span class="carton-milk-label">MILK</span>
-            </div>
-            <div class="carton-body">
-              <div class="carton-entrance">
-                <div class="carton-cushion" id="cartonCushion"></div>
+          <!-- SCENE 1: OUTSIDE ON THE BEDROOM RUG -->
+          <div class="scene-stage scene-outside active" id="sceneOutside">
+            <div class="room-stars" id="roomStars"></div>
+            <div class="outside-wall-ambient"></div>
+            <div class="room-floor"></div>
+            <div class="room-rug"></div>
+
+            <!-- Exterior Milk Carton Bed House -->
+            <div class="milk-carton-exterior" id="outsideCartonHouse" title="Tap to enter Meeko's milk carton!">
+              <div class="carton-top-crease">
+                <span>OPEN ➔</span>
               </div>
+              <div class="carton-roof">
+                <span class="carton-brand">MEEKO'S</span>
+                <span class="carton-milk-label">MILK</span>
+              </div>
+              <div class="carton-body">
+                <div class="carton-strawberry-crest">🍓 100% PURE CUTENESS</div>
+                <div class="carton-entrance-arch">
+                  <div class="carton-dark-interior"></div>
+                  <div class="carton-cushion-peek"></div>
+                </div>
+              </div>
+              <!-- Floating Entry Badge / Button -->
+              <button class="enter-carton-btn" id="enterCartonBtn" title="Enter Milk Carton">
+                <span>Go Inside 🐾</span>
+              </button>
             </div>
+
+            <!-- Outside Meeko Sprite -->
+            <div class="meeko-container outside-meeko facing-right" id="outsideMeeko" title="Tap Meeko to Pet!">
+              <div class="cat-hat-slot" id="outsideHatSlot"></div>
+              <div class="meeko-art" id="outsideMeekoArt"></div>
+            </div>
+
+            <!-- Hearts Floating Layer (Outside) -->
+            <div class="pet-hearts-layer" id="heartsLayerOutside"></div>
           </div>
 
-          <!-- Room Decor Slots -->
-          <div id="decorFood" class="decor-slot decor-food">🐟</div>
-          <div id="decorToy" class="decor-slot decor-toy">🧶</div>
-          <div id="decorPlant" class="decor-slot decor-plant">🪴</div>
-          <div id="decorTree" class="decor-slot decor-tree">🎪</div>
-
-          <!-- Interactive Meeko Sprite -->
-          <div class="meeko-container" id="meekoSprite" title="Tap Meeko to Pet!">
-            <!-- Equipped Hat Anchor -->
-            <div class="cat-hat-slot" id="catHatSlot"></div>
-
-            <!-- Body with seamlessly connected tail -->
-            <div class="cat-body">
-              <div class="cat-spine-stripe"></div>
-              <div class="cat-tail-root">
-                <div class="cat-tail"></div>
-              </div>
-              <div class="cat-white-chest"></div>
-              <div class="cat-paw-left"></div>
-              <div class="cat-paw-right"></div>
+          <!-- SCENE 2: INSIDE THE MILK CARTON HAVEN -->
+          <div class="scene-stage scene-inside" id="sceneInside">
+            <div class="carton-inside-ceiling">
+              <div class="carton-ceiling-crease-shadow"></div>
+              <div class="carton-crease-label">MEEKO'S HAVEN 🥛</div>
+              <!-- Exit Button to step outside -->
+              <button class="exit-carton-btn" id="exitCartonBtn" title="Step outside to the rug">
+                <span>Step Outside 🚪</span>
+              </button>
             </div>
 
-            <!-- Head with ear tip and round cheeks -->
-            <div class="cat-head">
-              <div class="cat-ear left tipped">
-                <div class="ear-inner"></div>
-                <div class="ear-notch"></div>
-              </div>
-              <div class="cat-ear right">
-                <div class="ear-inner"></div>
-              </div>
-
-              <!-- Tuxedo White Face Blaze -->
-              <div class="cat-white-blaze">
-                <div class="cat-blaze-peak"></div>
-              </div>
-
-              <!-- Almond Eyes looking up affectionately -->
-              <div class="cat-eye left">
-                <div class="cat-pupil"></div>
-                <div class="cat-eye-shine"></div>
-              </div>
-              <div class="cat-eye right">
-                <div class="cat-pupil"></div>
-                <div class="cat-eye-shine"></div>
-              </div>
-
-              <!-- Meeko's distinctive black nose spot & pink chin -->
-              <div class="cat-nose"></div>
-              <div class="cat-mouth"></div>
-              <div class="cat-pink-chin"></div>
-
-              <!-- Whiskers -->
-              <div class="cat-whisker left-1"></div>
-              <div class="cat-whisker left-2"></div>
-              <div class="cat-whisker left-3"></div>
-              <div class="cat-whisker right-1"></div>
-              <div class="cat-whisker right-2"></div>
-              <div class="cat-whisker right-3"></div>
-
-              <!-- Royal Blue Collar with silver/gold bell & tag -->
-              <div class="cat-collar">
-                <div class="cat-bell"></div>
-                <div class="cat-tag"></div>
-              </div>
+            <!-- Interior Atmosphere & Wall Shading -->
+            <div class="carton-interior-walls">
+              <div class="kraft-paper-texture"></div>
+              <div class="interior-cozy-glow"></div>
             </div>
+
+            <!-- Inside Decor Elements -->
+            <div class="inside-decor-layer">
+              <div class="decor-inside-slot decor-ceiling-stars" id="insideCeilingStars" title="Midnight Stars">✨ ⭐ 🌌 ⭐ ✨</div>
+              <div class="decor-inside-slot decor-fairy-lights" id="insideFairyLights" title="Fairy Lights">
+                <span class="fairy-bulb b1"></span>
+                <span class="fairy-bulb b2"></span>
+                <span class="fairy-bulb b3"></span>
+                <span class="fairy-bulb b4"></span>
+                <span class="fairy-bulb b5"></span>
+                <span class="fairy-bulb b6"></span>
+              </div>
+              <div class="decor-inside-slot decor-scratching-tree" id="insideScratcher" title="Scratching Castle">🎪</div>
+              <div class="decor-inside-slot decor-cat-grass" id="insideCatGrass" title="Cat Grass Garden">🪴</div>
+              <div class="decor-inside-slot decor-yarn-toy" id="insideYarnToy" title="Rainbow Yarn Ball">🧶</div>
+              <div class="decor-inside-slot decor-tuna-feast" id="insideTunaFeast" title="Fresh Gourmet Feast">🐟🥛</div>
+            </div>
+
+            <!-- Inside Plush Cushion Floor -->
+            <div class="carton-inside-floor">
+              <div class="inside-plush-mat"></div>
+            </div>
+
+            <!-- Inside Meeko Thought Bubble -->
+            <div class="meeko-thought-bubble" id="insideThoughtBubble">
+              <span class="thought-tail">💭</span>
+              <span class="thought-text" id="thoughtText">Ah, my cozy milk carton haven! ✨</span>
+            </div>
+
+            <!-- Inside Meeko Sprite (Wandering) -->
+            <div class="meeko-container inside-meeko facing-right" id="insideMeeko" title="Tap Meeko to Pet!">
+              <div class="cat-hat-slot" id="insideHatSlot"></div>
+              <div class="meeko-art" id="insideMeekoArt"></div>
+            </div>
+
+            <!-- Hearts Floating Layer (Inside) -->
+            <div class="pet-hearts-layer" id="heartsLayerInside"></div>
           </div>
 
-          <!-- Floating Hearts Layer -->
-          <div class="pet-hearts-layer" id="heartsLayer"></div>
         </div>
 
         <!-- Pet Interaction Status Bar -->

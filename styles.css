@@ -641,18 +641,41 @@ header {
 /* =========================================
    MEEKO'S MILK CARTON HAVEN (ROOM & SPRITE)
    ========================================= */
-.room-container {
+/* Two-Stage Meeko Haven Container */
+.meeko-world {
   width: 100%;
   height: 380px;
   border-radius: 24px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(180deg, #13192e 0%, #1a223d 60%, #242c4c 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.4);
 }
 
-/* Background Stars */
+/* Scene Stages (Outside vs Inside) */
+.scene-stage {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.96);
+  transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.scene-stage.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* =========================================
+   SCENE 1: OUTSIDE ON BEDROOM PORCH / RUG
+   ========================================= */
+.scene-outside {
+  background: linear-gradient(180deg, #111528 0%, #18203c 55%, #222b4d 100%);
+}
+
 .room-stars {
   position: absolute;
   inset: 0;
@@ -663,59 +686,72 @@ header {
     radial-gradient(1.5px 1.5px at 280px 70px, #ffffff, transparent),
     radial-gradient(1px 1px at 320px 20px, #cbd5e1, transparent);
   background-size: 350px 200px;
-  opacity: 0.5;
+  opacity: 0.65;
+  pointer-events: none;
+  animation: twinkleStars 4s ease-in-out infinite alternate;
+}
+
+@keyframes twinkleStars {
+  0% { filter: brightness(0.9); opacity: 0.55; }
+  100% { filter: brightness(1.4); opacity: 0.85; }
+}
+
+.outside-wall-ambient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 250px;
+  background: radial-gradient(circle at 50% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 70%);
   pointer-events: none;
 }
 
-.room-stars.active-stars {
-  opacity: 1;
-  animation: twinkle 3s ease-in-out infinite alternate;
-}
-
-@keyframes twinkle {
-  0% { filter: brightness(1); }
-  100% { filter: brightness(1.6); }
-}
-
-/* Room Wall & Floor */
 .room-floor {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 120px;
-  background: linear-gradient(180deg, #2b273d 0%, #201d2e 100%);
+  height: 110px;
+  background: linear-gradient(180deg, #282438 0%, #1c1928 100%);
   border-top: 3px solid rgba(255, 255, 255, 0.08);
 }
 
 .room-rug {
   position: absolute;
-  bottom: 12px;
+  bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  width: 320px;
-  height: 70px;
+  width: 330px;
+  height: 68px;
   border-radius: 50%;
-  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.35) 0%, rgba(244, 63, 94, 0.15) 70%, transparent 100%);
-  border: 1px dashed rgba(255, 255, 255, 0.15);
+  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.38) 0%, rgba(244, 63, 94, 0.16) 70%, transparent 100%);
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
-/* Milk Carton Bed */
-.milk-carton {
+/* Exterior Milk Carton Bed House */
+.milk-carton-exterior {
   position: absolute;
-  left: 30px;
-  bottom: 40px;
-  width: 170px;
-  height: 180px;
-  filter: drop-shadow(0 12px 16px rgba(0,0,0,0.6));
-  z-index: 5;
+  left: 20px;
+  bottom: 28px;
+  width: 165px;
+  height: 195px;
+  cursor: pointer;
+  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.6));
+  z-index: 10;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
-.carton-top-crease {
+.milk-carton-exterior:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 14px 22px rgba(139, 92, 246, 0.35));
+}
+
+.milk-carton-exterior .carton-top-crease {
   position: absolute;
   top: 0;
-  left: 20px;
-  width: 130px;
+  left: 18px;
+  width: 128px;
   height: 28px;
   background: #fbf9f4;
   border-radius: 6px 6px 0 0;
@@ -724,26 +760,35 @@ header {
   align-items: center;
   justify-content: flex-end;
   padding-right: 12px;
-  font-size: 0.55rem;
+  font-size: 0.58rem;
   font-weight: 900;
   color: #1e1b18;
   letter-spacing: 0.5px;
-  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.06);
+  box-shadow: inset 0 -3px 0 rgba(0,0,0,0.08);
 }
 
-.carton-roof {
+.milk-carton-exterior .carton-roof {
   position: absolute;
   top: 26px;
-  left: 6px;
-  width: 158px;
+  left: 5px;
+  width: 154px;
   height: 52px;
-  background: #dcd0bc;
+  background: linear-gradient(180deg, #e4d7c3 0%, #d8c9b2 100%);
   clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
   border: 2px solid #5a4f43;
   border-bottom: none;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.carton-brand {
+  font-size: 0.52rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #78350f;
+  margin-bottom: -2px;
 }
 
 .carton-milk-label {
@@ -752,95 +797,376 @@ header {
   color: #27221d;
   letter-spacing: 3px;
   text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
-  transform: translateY(-2px);
 }
 
-.carton-body {
+.milk-carton-exterior .carton-body {
   position: absolute;
   top: 76px;
-  left: 6px;
-  width: 158px;
-  height: 98px;
+  left: 5px;
+  width: 154px;
+  height: 110px;
   background: #faf6ee;
   border-radius: 0 0 16px 16px;
   border: 2px solid #5a4f43;
-  overflow: hidden;
   box-shadow: inset 0 -12px 0 #ded2be;
+  overflow: hidden;
 }
 
-.carton-entrance {
+.carton-strawberry-crest {
+  font-size: 0.5rem;
+  font-weight: 800;
+  text-align: center;
+  color: #e11d48;
+  letter-spacing: 1px;
+  padding-top: 4px;
+}
+
+.carton-entrance-arch {
   position: absolute;
-  bottom: 6px;
+  bottom: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 90px;
-  height: 72px;
-  background: #2b221b;
-  border-radius: 45px 45px 8px 8px;
+  width: 96px;
+  height: 80px;
+  background: #201a14;
+  border-radius: 48px 48px 10px 10px;
   border: 3px solid #5a4f43;
   overflow: hidden;
 }
 
-.carton-cushion {
+.carton-dark-interior {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 80%, #3a2c20 0%, #15110d 100%);
+}
+
+.carton-cushion-peek {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 28px;
-  background: #d8cbb8;
+  height: 30px;
+  background: #ded0bc;
   border-radius: 50% 50% 0 0;
-  box-shadow: inset 0 3px 6px rgba(0,0,0,0.25);
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.3);
 }
 
-/* Fairy lights on carton */
-.carton-fairy-lights {
+/* Floating Enter Carton Action Button */
+.enter-carton-btn {
   position: absolute;
-  top: 22px;
-  left: 4px;
-  width: 162px;
-  height: 12px;
-  display: none;
-  justify-content: space-around;
-  z-index: 10;
+  top: -12px;
+  right: -8px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  padding: 5px 11px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
+  animation: enterBtnPulse 2.2s infinite ease-in-out;
+  z-index: 15;
 }
 
-.carton-fairy-lights.active {
+@keyframes enterBtnPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5); }
+  50% { transform: scale(1.06); box-shadow: 0 6px 16px rgba(236, 72, 153, 0.6); }
+}
+
+/* Outside Meeko container & Trot Into Carton Animation */
+.meeko-container.outside-meeko {
+  position: absolute;
+  right: 28px;
+  bottom: 18px;
+  width: 145px;
+  height: 165px;
+  cursor: pointer;
+  z-index: 20;
+}
+
+.meeko-container.outside-meeko.entering-carton {
+  animation: enterCartonWalk 1.1s cubic-bezier(0.42, 0, 0.58, 1) forwards;
+}
+
+@keyframes enterCartonWalk {
+  0% {
+    right: 28px;
+    transform: scale(1) translateY(0);
+    opacity: 1;
+  }
+  45% {
+    right: 110px;
+    transform: scale(0.92) translateY(-6px);
+    opacity: 1;
+  }
+  75% {
+    right: 175px;
+    transform: scale(0.72) translateY(-3px);
+    opacity: 0.85;
+  }
+  100% {
+    right: 195px;
+    transform: scale(0.5) translateY(0);
+    opacity: 0;
+  }
+}
+
+/* =========================================
+   SCENE 2: INSIDE THE MILK CARTON HAVEN
+   ========================================= */
+.scene-inside {
+  background: linear-gradient(180deg, #f7f1e5 0%, #ece0ce 50%, #ded0ba 100%);
+  box-shadow: inset 0 0 50px rgba(80, 50, 20, 0.25);
+}
+
+.carton-inside-ceiling {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 52px;
+  background: linear-gradient(180deg, #e4d3ba 0%, #dbcaa0 100%);
+  border-bottom: 2px solid #b7a180;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 25;
+}
+
+.carton-ceiling-crease-shadow {
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(180deg, rgba(70, 50, 30, 0.18) 0%, transparent 100%);
+}
+
+.carton-crease-label {
+  font-size: 0.82rem;
+  font-weight: 900;
+  color: #453424;
+  letter-spacing: 1px;
+}
+
+.exit-carton-btn {
+  background: rgba(45, 30, 15, 0.08);
+  border: 1px solid rgba(70, 50, 30, 0.2);
+  color: #3f3123;
+  padding: 5px 12px;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.exit-carton-btn:hover {
+  background: rgba(45, 30, 15, 0.16);
+  transform: scale(1.03);
+}
+
+.carton-interior-walls {
+  position: absolute;
+  inset: 52px 0 65px 0;
+  pointer-events: none;
+}
+
+.kraft-paper-texture {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(160, 120, 70, 0.03) 0, rgba(160, 120, 70, 0.03) 1px, transparent 0, transparent 8px);
+}
+
+.interior-cozy-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgba(255, 240, 200, 0.45) 0%, transparent 80%);
+}
+
+.carton-inside-floor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 72px;
+  background: linear-gradient(180deg, #cfbeaa 0%, #baa690 100%);
+  border-top: 3px solid #ab9680;
+}
+
+.inside-plush-mat {
+  position: absolute;
+  bottom: 8px;
+  left: 20px;
+  right: 20px;
+  height: 52px;
+  background: #fbf8f2;
+  border-radius: 26px;
+  border: 2px dashed #caa888;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.06), 0 3px 8px rgba(70,50,30,0.15);
+}
+
+/* Inside Decor Slots */
+.inside-decor-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.decor-inside-slot {
+  position: absolute;
+  display: none;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+}
+
+.decor-inside-slot.active {
+  display: block;
+  animation: decorPopIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes decorPopIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.decor-ceiling-stars {
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2rem;
+  letter-spacing: 12px;
+  color: #eab308;
+  text-shadow: 0 0 10px #fde047;
+  animation: starPulse 2.5s infinite alternate;
+}
+
+@keyframes starPulse {
+  0% { opacity: 0.7; filter: brightness(1); }
+  100% { opacity: 1; filter: brightness(1.4); }
+}
+
+.decor-fairy-lights {
+  top: 54px;
+  left: 20px;
+  right: 20px;
+  height: 18px;
+  display: none;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.decor-fairy-lights.active {
   display: flex;
 }
 
-.fairy-bulb {
-  width: 8px;
-  height: 8px;
+.decor-fairy-lights .fairy-bulb {
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: #fef08a;
-  box-shadow: 0 0 8px #fef08a, 0 0 14px #eab308;
-  animation: glowBulb 1.5s infinite alternate;
+  animation: glowBulb 1.6s infinite alternate;
 }
 
-.fairy-bulb:nth-child(2) { animation-delay: 0.3s; background: #fda4af; box-shadow: 0 0 8px #fda4af; }
-.fairy-bulb:nth-child(3) { animation-delay: 0.6s; background: #67e8f9; box-shadow: 0 0 8px #67e8f9; }
-.fairy-bulb:nth-child(4) { animation-delay: 0.9s; background: #c4b5fd; box-shadow: 0 0 8px #c4b5fd; }
-.fairy-bulb:nth-child(5) { animation-delay: 1.2s; background: #fef08a; box-shadow: 0 0 8px #fef08a; }
+.decor-fairy-lights .b1 { background: #fde047; box-shadow: 0 0 10px #fde047; animation-delay: 0s; }
+.decor-fairy-lights .b2 { background: #f472b6; box-shadow: 0 0 10px #f472b6; animation-delay: 0.3s; }
+.decor-fairy-lights .b3 { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; animation-delay: 0.6s; }
+.decor-fairy-lights .b4 { background: #4ade80; box-shadow: 0 0 10px #4ade80; animation-delay: 0.9s; }
+.decor-fairy-lights .b5 { background: #c084fc; box-shadow: 0 0 10px #c084fc; animation-delay: 1.2s; }
+.decor-fairy-lights .b6 { background: #fb923c; box-shadow: 0 0 10px #fb923c; animation-delay: 1.5s; }
 
 @keyframes glowBulb {
-  0% { transform: scale(0.9); opacity: 0.7; }
-  100% { transform: scale(1.15); opacity: 1; }
+  0% { transform: scale(0.85); opacity: 0.6; }
+  100% { transform: scale(1.2); opacity: 1; }
 }
 
-/* MEEKO (THE CAT SPRITE) */
-.meeko-container {
-  position: absolute;
-  right: 32px;
+.decor-scratching-tree {
+  right: 18px;
   bottom: 24px;
-  width: 150px;
-  height: 180px;
+  font-size: 2.2rem;
+}
+
+.decor-cat-grass {
+  left: 80px;
+  bottom: 24px;
+  font-size: 1.8rem;
+}
+
+.decor-yarn-toy {
+  right: 85px;
+  bottom: 20px;
+  font-size: 1.7rem;
+  animation: yarnRoll 3s infinite ease-in-out alternate;
+}
+
+@keyframes yarnRoll {
+  0% { transform: rotate(-10deg) translateX(0); }
+  100% { transform: rotate(15deg) translateX(8px); }
+}
+
+.decor-tuna-feast {
+  left: 18px;
+  bottom: 22px;
+  font-size: 1.7rem;
+}
+
+/* Meeko Thought Bubble (Inside Carton) */
+.meeko-thought-bubble {
+  position: absolute;
+  top: 86px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  background: #ffffff;
+  color: #1e293b;
+  border: 2px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  z-index: 30;
+  white-space: nowrap;
+}
+
+.meeko-thought-bubble.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.thought-tail {
+  font-size: 1rem;
+}
+
+/* Inside Meeko Sprite (Wandering) */
+.meeko-container.inside-meeko {
+  position: absolute;
+  bottom: 14px;
+  left: 140px;
+  width: 140px;
+  height: 160px;
   cursor: pointer;
   z-index: 20;
+}
+
+/* =========================================
+   GENERIC MEEKO CONTAINER & ACCESSORY STYLES
+   ========================================= */
+.meeko-container {
+  display: block;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
   transition: transform 0.15s ease;
 }
 
 .meeko-container:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 .meeko-container.purring {
@@ -849,323 +1175,50 @@ header {
 
 @keyframes meekoBounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px) rotate(-1deg); }
+  50% { transform: translateY(-12px) rotate(-1deg); }
 }
 
-/* Cat Body Components */
-.cat-body {
-  position: absolute;
-  bottom: 14px;
-  left: 30px;
-  width: 92px;
-  height: 98px;
-  background: #18191c;
-  border-radius: 46px 46px 36px 36px;
-  z-index: 2;
-  box-shadow: inset -6px -4px 10px rgba(0,0,0,0.4);
+.meeko-art {
+  width: 100%;
+  height: 100%;
 }
 
-/* Meeko's subtle silver/white dorsal spine stripe */
-.cat-spine-stripe {
-  position: absolute;
-  top: 10px;
-  right: 18px;
-  width: 5px;
-  height: 48px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.2) 80%, transparent 100%);
-  border-radius: 4px;
-  transform: rotate(6deg);
-  opacity: 0.65;
-  filter: blur(0.5px);
+.meeko-svg-art {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
 }
 
-/* Anatomically seamlessly attached tail */
-.cat-tail-root {
-  position: absolute;
-  bottom: 22px;
-  right: -8px;
-  width: 24px;
-  height: 24px;
-  background: #18191c;
-  border-radius: 50%;
-  z-index: -1;
-}
-
-.cat-tail {
-  position: absolute;
-  bottom: 4px;
-  right: 2px;
-  width: 16px;
-  height: 100px;
-  background: linear-gradient(180deg, #121316 0%, #1e1f24 70%, #18191c 100%);
-  border-radius: 12px 12px 6px 6px;
-  transform-origin: bottom center;
-  transform: rotate(18deg);
+/* Tail Swish Animation on SVG */
+.cat-tail-group {
+  transform-origin: 130px 148px;
   animation: tailSwish 2.8s ease-in-out infinite alternate;
-  box-shadow: -2px 2px 6px rgba(0,0,0,0.3);
 }
 
 @keyframes tailSwish {
-  0% { transform: rotate(14deg); }
-  50% { transform: rotate(26deg); }
-  100% { transform: rotate(18deg); }
+  0% { transform: rotate(-5deg); }
+  50% { transform: rotate(8deg); }
+  100% { transform: rotate(-2deg); }
 }
 
-.cat-white-chest {
-  position: absolute;
-  top: 12px;
-  left: 18px;
-  width: 54px;
-  height: 72px;
-  background: #ffffff;
-  border-radius: 26px 26px 32px 32px;
-  box-shadow: inset 0 -4px 6px rgba(0,0,0,0.06);
-}
-
-.cat-paw-left, .cat-paw-right {
-  position: absolute;
-  bottom: -2px;
-  width: 24px;
-  height: 18px;
-  background: #ffffff;
-  border-radius: 12px 12px 6px 6px;
-  border: 1px solid rgba(0,0,0,0.08);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-  z-index: 4;
-}
-
-.cat-paw-left { left: 16px; }
-.cat-paw-right { left: 48px; }
-
-/* Cat Head & Tuxedo Mask */
-.cat-head {
-  position: absolute;
-  top: 18px;
-  left: 24px;
-  width: 102px;
-  height: 88px;
-  background: #18191c;
-  border-radius: 51px 51px 44px 44px;
-  z-index: 5;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
-
-/* Ears (Left ear has Meeko's characteristic tip notch) */
-.cat-ear {
-  position: absolute;
-  top: -18px;
-  width: 0;
-  height: 0;
-  border-left: 16px solid transparent;
-  border-right: 16px solid transparent;
-  border-bottom: 26px solid #18191c;
-}
-
-.cat-ear.left {
-  left: 6px;
-  transform: rotate(-14deg);
-}
-
-.cat-ear.left.tipped {
-  border-bottom: 22px solid #18191c;
-  top: -14px;
-}
-
-.cat-ear.left .ear-notch {
-  position: absolute;
-  top: 1px;
-  right: -7px;
-  width: 6px;
-  height: 5px;
-  background: #13192e;
-  border-radius: 50%;
-}
-
-.cat-ear.right {
-  right: 6px;
-  transform: rotate(14deg);
-}
-
-.ear-inner {
-  position: absolute;
-  top: 6px;
-  left: -9px;
-  width: 0;
-  height: 0;
-  border-left: 9px solid transparent;
-  border-right: 9px solid transparent;
-  border-bottom: 16px solid #fca5a5;
-  opacity: 0.85;
-}
-
-/* Tuxedo White Face Blaze */
-.cat-white-blaze {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 54px;
-  height: 58px;
-  background: #ffffff;
-  border-radius: 27px 27px 24px 24px;
-}
-
-.cat-blaze-peak {
-  position: absolute;
-  top: -16px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 16px;
-  height: 22px;
-  background: #ffffff;
-  border-radius: 10px 10px 0 0;
-}
-
-/* Eyes (Soft olive green with big affectionate pupils) */
-.cat-eye {
-  position: absolute;
-  top: 32px;
-  width: 17px;
-  height: 19px;
-  background: radial-gradient(circle at 40% 40%, #bef264 0%, #84cc16 65%, #4d7c0f 100%);
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: inset 0 0 4px rgba(0,0,0,0.6), 0 0 2px rgba(0,0,0,0.3);
-  z-index: 6;
-}
-
-.cat-eye.left { left: 22px; }
-.cat-eye.right { right: 22px; }
-
-.cat-pupil {
-  position: absolute;
-  top: 3px;
-  left: 4px;
-  width: 9px;
-  height: 14px;
-  background: #09090b;
-  border-radius: 50%;
-}
-
-.cat-eye-shine {
-  position: absolute;
-  top: 4px;
-  left: 5px;
-  width: 4.5px;
-  height: 4.5px;
-  background: #ffffff;
-  border-radius: 50%;
-  box-shadow: 2px 2px 0 1px rgba(255,255,255,0.4);
-}
-
-/* Distinctive Black Nose Spot (Meeko's Signature Marking) */
-.cat-nose {
-  position: absolute;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 9px;
-  height: 7px;
-  background: #18191c;
-  border-radius: 50% 50% 60% 60%;
-  z-index: 7;
-  box-shadow: 0 1px 1px rgba(0,0,0,0.3);
-}
-
-.cat-mouth {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 9px;
-  border-bottom: 2px solid #71717a;
-  border-radius: 0 0 12px 12px;
-  z-index: 7;
-}
-
-.cat-pink-chin {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 10px;
-  height: 6px;
-  background: #fecdd3;
-  border-radius: 50%;
-  opacity: 0.55;
-  z-index: 7;
-}
-
-/* Whiskers */
-.cat-whisker {
-  position: absolute;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.85);
-  z-index: 8;
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
-}
-
-.cat-whisker.left-1 { width: 24px; left: -16px; top: 46px; transform: rotate(-6deg); }
-.cat-whisker.left-2 { width: 22px; left: -14px; top: 52px; transform: rotate(4deg); }
-.cat-whisker.left-3 { width: 18px; left: -10px; top: 58px; transform: rotate(14deg); }
-.cat-whisker.right-1 { width: 24px; right: -16px; top: 46px; transform: rotate(6deg); }
-.cat-whisker.right-2 { width: 22px; right: -14px; top: 52px; transform: rotate(-4deg); }
-.cat-whisker.right-3 { width: 18px; right: -10px; top: 58px; transform: rotate(-14deg); }
-
-/* Royal Blue Collar & Bell/Tag */
-.cat-collar {
-  position: absolute;
-  bottom: 0px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 64px;
-  height: 10px;
-  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
-  border-radius: 5px;
-  z-index: 9;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.4);
-}
-
-.cat-bell {
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 10px;
-  height: 10px;
-  background: #facc15;
-  border-radius: 50%;
-  border: 1px solid #ca8a04;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
-  z-index: 10;
-}
-
-.cat-tag {
-  position: absolute;
-  bottom: -11px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  background: #cbd5e1;
-  border-radius: 1px;
-  transform: rotate(45deg);
-  border: 1px solid #94a3b8;
-  z-index: 9;
-}
-
-/* Equippable Hat / Headwear Anchor */
+/* SNUG HAT POSITIONING (NESTLED NATURALLY ON HIS BROW) */
 .cat-hat-slot {
   position: absolute;
-  top: -24px;
-  left: 50%;
+  top: 10px;
+  left: 37%;
   transform: translateX(-50%);
-  z-index: 20;
-  font-size: 2.3rem;
+  z-index: 25;
+  font-size: 1.7rem;
+  line-height: 1;
   pointer-events: none;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
-  animation: hatBob 2.8s ease-in-out infinite alternate;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.45));
+  transition: left 0.25s ease, transform 0.25s ease;
+  animation: hatBob 2.5s ease-in-out infinite alternate;
+}
+
+.meeko-container.facing-left .cat-hat-slot {
+  left: 63%;
 }
 
 @keyframes hatBob {
@@ -1173,37 +1226,13 @@ header {
   100% { transform: translateX(-50%) translateY(-2px); }
 }
 
-/* Room Decor Items */
-.decor-slot {
-  position: absolute;
-  z-index: 12;
-  font-size: 2.2rem;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-  display: none;
-}
-
-.decor-slot.active {
-  display: block;
-  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes popIn {
-  0% { transform: scale(0.4); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.decor-food { left: 195px; bottom: 35px; font-size: 1.8rem; }
-.decor-toy { right: 170px; bottom: 25px; font-size: 1.7rem; }
-.decor-plant { left: 14px; bottom: 130px; font-size: 2rem; }
-.decor-tree { right: 12px; bottom: 125px; font-size: 2.4rem; }
-
 /* Floating Hearts when pet */
 .pet-hearts-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
   overflow: hidden;
-  z-index: 30;
+  z-index: 35;
 }
 
 .floating-heart {

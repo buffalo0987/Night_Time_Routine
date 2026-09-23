@@ -1,4 +1,4 @@
-const CACHE_NAME = 'night-routine-v4';
+const CACHE_NAME = 'night-routine-v5';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
