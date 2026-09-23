@@ -37,12 +37,12 @@
         <div class="coin-pill-main">
           <span class="coin-large-icon">🪙</span>
           <div class="coin-info">
-            <span class="coin-label">Reward Balance</span>
+            <span class="coin-label">Meeko's Bank</span>
             <span id="coinCount" class="coin-balance">0 Coins</span>
           </div>
         </div>
         <div class="coin-sub-indicator">
-          <span>Midnight Vault</span>
+          <span>Milk Haven</span>
         </div>
       </div>
 
@@ -55,7 +55,7 @@
           </div>
           <div id="countdownTimer" class="countdown-val">Calculating...</div>
         </div>
-        <span id="cutoffBadge" class="cutoff-badge">Cutoff 9:00 PM</span>
+        <span id="cutoffBadge" class="cutoff-badge">Cutoff 8:30 PM</span>
       </div>
     </header>
 
@@ -73,7 +73,7 @@
             <span>🎁 Claim Nightly Reward</span>
             <span style="font-size:0.85rem; opacity:0.9;">(+5 Spins)</span>
           </button>
-          <p id="claimSubtitle" class="claim-subtitle">Complete all tasks before 9:00 PM to claim!</p>
+          <p id="claimSubtitle" class="claim-subtitle">Complete all tasks before 8:30 PM to claim!</p>
         </div>
       </section>
 
@@ -134,10 +134,121 @@
         </div>
       </section>
 
-      <!-- TAB 3: REWARD STORE -->
+      <!-- TAB 3: MEEKO'S HAVEN (DIGITAL PET ROOM) -->
+      <section id="viewMeeko" class="view-section">
+        <div class="section-title">
+          <span>Meeko's Milk Carton Haven</span>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Tap Meeko to pet!</span>
+        </div>
+
+        <!-- The Interactive Room Container -->
+        <div class="room-container" id="meekoRoom">
+          <div class="room-stars" id="roomStars"></div>
+          <div class="room-floor"></div>
+          <div class="room-rug"></div>
+
+          <!-- Milk Carton House -->
+          <div class="milk-carton" id="milkCartonHouse">
+            <div class="carton-fairy-lights" id="fairyLightsDecor">
+              <div class="fairy-bulb"></div>
+              <div class="fairy-bulb"></div>
+              <div class="fairy-bulb"></div>
+              <div class="fairy-bulb"></div>
+              <div class="fairy-bulb"></div>
+            </div>
+            <div class="carton-top-crease">OPEN ➔</div>
+            <div class="carton-roof">
+              <span class="carton-milk-label">MILK</span>
+            </div>
+            <div class="carton-body">
+              <div class="carton-entrance">
+                <div class="carton-cushion" id="cartonCushion"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Room Decor Slots -->
+          <div id="decorFood" class="decor-slot decor-food">🐟</div>
+          <div id="decorToy" class="decor-slot decor-toy">🧶</div>
+          <div id="decorPlant" class="decor-slot decor-plant">🪴</div>
+          <div id="decorTree" class="decor-slot decor-tree">🎪</div>
+
+          <!-- Interactive Meeko Sprite -->
+          <div class="meeko-container" id="meekoSprite" title="Tap Meeko to Pet!">
+            <!-- Equipped Hat Anchor -->
+            <div class="cat-hat-slot" id="catHatSlot"></div>
+
+            <!-- Tail -->
+            <div class="cat-tail"></div>
+
+            <!-- Body -->
+            <div class="cat-body">
+              <div class="cat-white-chest"></div>
+              <div class="cat-paw-left"></div>
+              <div class="cat-paw-right"></div>
+            </div>
+
+            <!-- Head -->
+            <div class="cat-head">
+              <div class="cat-ear left"><div class="ear-inner"></div></div>
+              <div class="cat-ear right"><div class="ear-inner"></div></div>
+
+              <!-- Tuxedo White Face Blaze -->
+              <div class="cat-white-blaze">
+                <div class="cat-blaze-peak"></div>
+              </div>
+
+              <!-- Olive Green Eyes -->
+              <div class="cat-eye left">
+                <div class="cat-pupil"></div>
+                <div class="cat-eye-shine"></div>
+              </div>
+              <div class="cat-eye right">
+                <div class="cat-pupil"></div>
+                <div class="cat-eye-shine"></div>
+              </div>
+
+              <!-- Meeko's distinctive black nose spot -->
+              <div class="cat-nose"></div>
+              <div class="cat-mouth"></div>
+
+              <!-- Whiskers -->
+              <div class="cat-whisker left-1"></div>
+              <div class="cat-whisker left-2"></div>
+              <div class="cat-whisker right-1"></div>
+              <div class="cat-whisker right-2"></div>
+
+              <!-- Blue Collar with Golden Bell/Tag -->
+              <div class="cat-collar"></div>
+              <div class="cat-bell"></div>
+            </div>
+          </div>
+
+          <!-- Floating Hearts Layer -->
+          <div class="pet-hearts-layer" id="heartsLayer"></div>
+        </div>
+
+        <!-- Pet Interaction Status Bar -->
+        <div class="pet-status-bar glass-panel">
+          <div class="pet-message">
+            <span id="petEmoji">😸</span>
+            <span id="petStatusText">Meeko is purring happily!</span>
+          </div>
+          <button class="pet-btn-action" id="petMeekoBtn">Pet Meeko ✨</button>
+        </div>
+      </section>
+
+      <!-- TAB 4: MEEKO'S BOUTIQUE (DIGITAL SHOP) -->
       <section id="viewStore" class="view-section">
-        <div class="section-title">Special Rewards & Treats</div>
-        <div id="storeList" class="store-list">
+        <div class="section-title">Meeko's Boutique & Decor</div>
+        
+        <!-- Shop Category Filter Tabs -->
+        <div class="shop-tabs">
+          <button class="shop-tab-btn active" id="tabHatsBtn" data-cat="hats">Hats & Accessories</button>
+          <button class="shop-tab-btn" id="tabDecorBtn" data-cat="decor">Milk Carton Decor</button>
+        </div>
+
+        <div id="shopGrid" class="shop-grid">
           <!-- Populated by JavaScript -->
         </div>
       </section>
@@ -162,9 +273,13 @@
         <span>Slots</span>
         <div id="spinsBadge" class="badge-spins" style="display:none;">0</div>
       </button>
+      <button class="tab-btn" data-tab="viewMeeko">
+        <div class="tab-emoji">🐱</div>
+        <span>Meeko</span>
+      </button>
       <button class="tab-btn" data-tab="viewStore">
         <svg viewBox="0 0 24 24"><path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/></svg>
-        <span>Store</span>
+        <span>Boutique</span>
       </button>
     </nav>
   </div>
@@ -203,20 +318,6 @@
     </label>
   </div>
 
-  <!-- VOUCHER CELEBRATION MODAL -->
-  <div id="voucherModal" class="modal-overlay">
-    <div class="modal-card glass-panel">
-      <button class="modal-close-btn" id="closeVoucherBtn">✕</button>
-      <div class="voucher-card">
-        <div style="font-size:2.5rem;">🎉</div>
-        <div id="voucherRewardName" class="voucher-title">Reward Name</div>
-        <div class="voucher-instructions">"Redeemed! Show this voucher to husband."</div>
-        <div id="voucherTimestamp" class="voucher-code">Sept 21, 2026 - 10:15 PM</div>
-      </div>
-      <button class="primary-btn claim-btn" id="confirmVoucherBtn">Awesome!</button>
-    </div>
-  </div>
-
   <!-- SLOT WIN MODAL -->
   <div id="winModal" class="modal-overlay">
     <div class="modal-card glass-panel">
@@ -226,6 +327,16 @@
         <div id="winDesc" style="color:var(--text-secondary); font-size:0.9rem;">You won 250 Coins!</div>
         <button class="primary-btn claim-btn" id="closeWinBtn" style="margin-top:10px;">Awesome!</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ITEM PURCHASE CONFIRMATION MODAL -->
+  <div id="itemModal" class="modal-overlay">
+    <div class="modal-card glass-panel" style="text-align:center;">
+      <div style="font-size:3rem;" id="itemModalIcon">👑</div>
+      <div style="font-size:1.25rem; font-weight:800; color:#fff;" id="itemModalTitle">Unlocked!</div>
+      <div style="font-size:0.85rem; color:var(--text-secondary);" id="itemModalDesc">Meeko loves his new accessory!</div>
+      <button class="primary-btn claim-btn" id="closeItemModalBtn">Equip & Celebrate!</button>
     </div>
   </div>
 
@@ -240,30 +351,14 @@
         <button class="modal-close-btn" id="closeAdminBtn">✕</button>
       </div>
 
-      <!-- Pending Vouchers Section -->
-      <div class="admin-section">
-        <div class="admin-subheading">Pending Vouchers to Fulfill</div>
-        <div id="pendingVouchersList" style="display:flex; flex-direction:column; gap:8px;">
-          <!-- Injected via JS -->
-        </div>
-      </div>
-
-      <!-- Completed History Section -->
-      <div class="admin-section">
-        <div class="admin-subheading">Completed Voucher History</div>
-        <div id="completedVouchersList" style="display:flex; flex-direction:column; gap:8px; max-height:140px; overflow-y:auto;">
-          <!-- Injected via JS -->
-        </div>
-      </div>
-
       <!-- Manual Overrides -->
       <div class="admin-section">
-        <div class="admin-subheading">Manual Overrides & Testing</div>
+        <div class="admin-subheading">Coins & Routine Controls</div>
         <div class="admin-controls-grid">
           <button class="admin-btn" id="adminAddSpinBtn">+5 Spins</button>
           <button class="admin-btn" id="adminAdd50CoinsBtn">+50 Coins</button>
           <button class="admin-btn" id="adminAdd200CoinsBtn">+200 Coins</button>
-          <button class="admin-btn" id="adminDeduct50CoinsBtn">-50 Coins</button>
+          <button class="admin-btn" id="adminUnlockAllItemsBtn">Unlock All Shop Items</button>
           <button class="admin-btn" id="adminUnlockTasksBtn">Unlock All Tasks</button>
           <button class="admin-btn" id="adminCompleteTasksBtn">Check All Tasks</button>
           <button class="admin-btn" id="adminResetRoutineBtn">Reset Routine State</button>

@@ -14,6 +14,10 @@
   --accent-purple-glow: rgba(139, 92, 246, 0.3);
   --accent-rose: #f43f5e;
   --accent-emerald: #10b981;
+  --accent-blue: #38bdf8;
+  --carton-cream: #ece3d4;
+  --carton-tan: #d4c5b0;
+  --carton-dark: #3b352f;
 
   --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
   --safe-top: env(safe-area-inset-top, 20px);
@@ -54,7 +58,7 @@ body {
   display: flex;
   flex-direction: column;
   position: relative;
-  padding: var(--safe-top) 16px calc(var(--safe-bottom) + 80px) 16px;
+  padding: var(--safe-top) 16px calc(var(--safe-bottom) + 84px) 16px;
 }
 
 /* Glassmorphism utility */
@@ -238,9 +242,9 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 0 8px;
+  padding: 0 4px;
   z-index: 50;
-  background: rgba(15, 20, 36, 0.88);
+  background: rgba(15, 20, 36, 0.9);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 24px;
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
@@ -254,7 +258,7 @@ header {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   background: none;
   border: none;
   color: var(--text-muted);
@@ -265,15 +269,20 @@ header {
   position: relative;
 }
 
-.tab-btn svg {
+.tab-btn svg, .tab-btn .tab-emoji {
   width: 22px;
   height: 22px;
   fill: currentColor;
+  font-size: 1.15rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.2s;
 }
 
 .tab-btn span {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   font-weight: 600;
 }
 
@@ -281,14 +290,14 @@ header {
   color: var(--accent-gold);
 }
 
-.tab-btn.active svg {
+.tab-btn.active svg, .tab-btn.active .tab-emoji {
   transform: translateY(-2px);
 }
 
 .badge-spins {
   position: absolute;
   top: 4px;
-  right: 22%;
+  right: 18%;
   background: var(--accent-rose);
   color: #fff;
   font-size: 0.62rem;
@@ -323,6 +332,9 @@ header {
   color: var(--text-secondary);
   font-weight: 700;
   margin-left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .tasks-list {
@@ -551,10 +563,9 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: absolute;
-  top: 0;
+  justify-content: center;
   width: 100%;
-  transition: transform 0.1s ease;
+  height: 100%;
 }
 
 .reel-item {
@@ -627,82 +638,659 @@ header {
   font-size: 0.85rem;
 }
 
-/* Reward Store */
-.store-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+/* =========================================
+   MEEKO'S MILK CARTON HAVEN (ROOM & SPRITE)
+   ========================================= */
+.room-container {
+  width: 100%;
+  height: 380px;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #13192e 0%, #1a223d 60%, #242c4c 100%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.4);
 }
 
-.reward-card {
-  padding: 16px 18px;
+/* Background Stars */
+.room-stars {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(1.5px 1.5px at 20px 30px, #ffffff, transparent),
+    radial-gradient(1px 1px at 60px 80px, #e2e8f0, transparent),
+    radial-gradient(2px 2px at 150px 40px, #fef08a, transparent),
+    radial-gradient(1.5px 1.5px at 280px 70px, #ffffff, transparent),
+    radial-gradient(1px 1px at 320px 20px, #cbd5e1, transparent);
+  background-size: 350px 200px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.room-stars.active-stars {
+  opacity: 1;
+  animation: twinkle 3s ease-in-out infinite alternate;
+}
+
+@keyframes twinkle {
+  0% { filter: brightness(1); }
+  100% { filter: brightness(1.6); }
+}
+
+/* Room Wall & Floor */
+.room-floor {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, #2b273d 0%, #201d2e 100%);
+  border-top: 3px solid rgba(255, 255, 255, 0.08);
+}
+
+.room-rug {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.35) 0%, rgba(244, 63, 94, 0.15) 70%, transparent 100%);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+}
+
+/* Milk Carton Bed */
+.milk-carton {
+  position: absolute;
+  left: 30px;
+  bottom: 40px;
+  width: 170px;
+  height: 180px;
+  filter: drop-shadow(0 12px 16px rgba(0,0,0,0.6));
+  z-index: 5;
+}
+
+.carton-top-crease {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  width: 130px;
+  height: 28px;
+  background: #fbf9f4;
+  border-radius: 6px 6px 0 0;
+  border: 2px solid #5a4f43;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  transition: all 0.2s ease;
+  justify-content: flex-end;
+  padding-right: 12px;
+  font-size: 0.55rem;
+  font-weight: 900;
+  color: #1e1b18;
+  letter-spacing: 0.5px;
+  box-shadow: inset 0 -4px 0 rgba(0,0,0,0.06);
 }
 
-.reward-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.reward-name {
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: #fff;
-  line-height: 1.3;
-}
-
-.reward-desc {
-  font-size: 0.76rem;
-  color: var(--text-muted);
-  line-height: 1.25;
-}
-
-.reward-cost {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--accent-gold);
+.carton-roof {
+  position: absolute;
+  top: 26px;
+  left: 6px;
+  width: 158px;
+  height: 52px;
+  background: #dcd0bc;
+  clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+  border: 2px solid #5a4f43;
+  border-bottom: none;
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 2px;
+  justify-content: center;
 }
 
-.redeem-btn {
-  padding: 10px 18px;
-  border-radius: 14px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  border: none;
+.carton-milk-label {
+  font-size: 1.35rem;
+  font-weight: 900;
+  color: #27221d;
+  letter-spacing: 3px;
+  text-shadow: 1px 1px 0 rgba(255,255,255,0.4);
+  transform: translateY(-2px);
+}
+
+.carton-body {
+  position: absolute;
+  top: 76px;
+  left: 6px;
+  width: 158px;
+  height: 98px;
+  background: #faf6ee;
+  border-radius: 0 0 16px 16px;
+  border: 2px solid #5a4f43;
+  overflow: hidden;
+  box-shadow: inset 0 -12px 0 #ded2be;
+}
+
+.carton-entrance {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 72px;
+  background: #2b221b;
+  border-radius: 45px 45px 8px 8px;
+  border: 3px solid #5a4f43;
+  overflow: hidden;
+}
+
+.carton-cushion {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: #d8cbb8;
+  border-radius: 50% 50% 0 0;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.25);
+}
+
+/* Fairy lights on carton */
+.carton-fairy-lights {
+  position: absolute;
+  top: 22px;
+  left: 4px;
+  width: 162px;
+  height: 12px;
+  display: none;
+  justify-content: space-around;
+  z-index: 10;
+}
+
+.carton-fairy-lights.active {
+  display: flex;
+}
+
+.fairy-bulb {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fef08a;
+  box-shadow: 0 0 8px #fef08a, 0 0 14px #eab308;
+  animation: glowBulb 1.5s infinite alternate;
+}
+
+.fairy-bulb:nth-child(2) { animation-delay: 0.3s; background: #fda4af; box-shadow: 0 0 8px #fda4af; }
+.fairy-bulb:nth-child(3) { animation-delay: 0.6s; background: #67e8f9; box-shadow: 0 0 8px #67e8f9; }
+.fairy-bulb:nth-child(4) { animation-delay: 0.9s; background: #c4b5fd; box-shadow: 0 0 8px #c4b5fd; }
+.fairy-bulb:nth-child(5) { animation-delay: 1.2s; background: #fef08a; box-shadow: 0 0 8px #fef08a; }
+
+@keyframes glowBulb {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.15); opacity: 1; }
+}
+
+/* MEEKO (THE CAT SPRITE) */
+.meeko-container {
+  position: absolute;
+  right: 32px;
+  bottom: 24px;
+  width: 150px;
+  height: 180px;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  flex-shrink: 0;
+  z-index: 20;
+  transition: transform 0.15s ease;
 }
 
-.redeem-btn.can-afford {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: #1e1b4b;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
-}
-
-.redeem-btn.can-afford:active {
+.meeko-container:active {
   transform: scale(0.95);
 }
 
-.redeem-btn:disabled {
+.meeko-container.purring {
+  animation: meekoBounce 0.4s ease 2;
+}
+
+@keyframes meekoBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px) rotate(-2deg); }
+}
+
+/* Cat Body Components */
+.cat-tail {
+  position: absolute;
+  right: 18px;
+  bottom: 50px;
+  width: 14px;
+  height: 90px;
+  background: #18191c;
+  border-radius: 12px;
+  transform-origin: bottom center;
+  transform: rotate(20deg);
+  animation: tailSwish 2.8s ease-in-out infinite alternate;
+  z-index: 1;
+}
+
+@keyframes tailSwish {
+  0% { transform: rotate(15deg); }
+  50% { transform: rotate(28deg); }
+  100% { transform: rotate(18deg); }
+}
+
+.cat-body {
+  position: absolute;
+  bottom: 12px;
+  left: 25px;
+  width: 88px;
+  height: 95px;
+  background: #18191c;
+  border-radius: 46px 46px 36px 36px;
+  z-index: 2;
+}
+
+.cat-white-chest {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  width: 48px;
+  height: 65px;
+  background: #ffffff;
+  border-radius: 24px 24px 30px 30px;
+}
+
+.cat-paw-left, .cat-paw-right {
+  position: absolute;
+  bottom: 0;
+  width: 24px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 12px 12px 6px 6px;
+  border: 1px solid rgba(0,0,0,0.1);
+  z-index: 4;
+}
+
+.cat-paw-left { left: 34px; }
+.cat-paw-right { left: 62px; }
+
+/* Cat Head & Tuxedo Mask */
+.cat-head {
+  position: absolute;
+  top: 25px;
+  left: 22px;
+  width: 94px;
+  height: 82px;
+  background: #18191c;
+  border-radius: 47px 47px 42px 42px;
+  z-index: 5;
+}
+
+/* Ears */
+.cat-ear {
+  position: absolute;
+  top: -16px;
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-bottom: 24px solid #18191c;
+}
+
+.cat-ear.left {
+  left: 6px;
+  transform: rotate(-15deg);
+}
+
+.cat-ear.right {
+  right: 6px;
+  transform: rotate(15deg);
+}
+
+.ear-inner {
+  position: absolute;
+  top: 6px;
+  left: -8px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 14px solid #fda4af;
+}
+
+/* Tuxedo White Face Blaze */
+.cat-white-blaze {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 52px;
+  background: #ffffff;
+  border-radius: 24px 24px 22px 22px;
+}
+
+.cat-blaze-peak {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 8px 8px 0 0;
+}
+
+/* Eyes */
+.cat-eye {
+  position: absolute;
+  top: 32px;
+  width: 15px;
+  height: 17px;
+  background: #a3e635; /* Olive green cat eyes */
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
+  z-index: 6;
+}
+
+.cat-eye.left { left: 20px; }
+.cat-eye.right { right: 20px; }
+
+.cat-pupil {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  width: 7px;
+  height: 13px;
+  background: #09090b;
+  border-radius: 50%;
+}
+
+.cat-eye-shine {
+  position: absolute;
+  top: 3px;
+  left: 4px;
+  width: 4px;
+  height: 4px;
+  background: #ffffff;
+  border-radius: 50%;
+}
+
+/* Distinctive Black Nose Spot (Meeko's Special Mark) */
+.cat-nose {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 6px;
+  background: #18191c;
+  border-radius: 50% 50% 60% 60%;
+  z-index: 7;
+}
+
+.cat-mouth {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 8px;
+  border-bottom: 2px solid #a1a1aa;
+  border-radius: 0 0 10px 10px;
+  z-index: 7;
+}
+
+/* Whiskers */
+.cat-whisker {
+  position: absolute;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 8;
+}
+
+.cat-whisker.left-1 { width: 22px; left: -14px; top: 44px; transform: rotate(-5deg); }
+.cat-whisker.left-2 { width: 20px; left: -12px; top: 50px; transform: rotate(8deg); }
+.cat-whisker.right-1 { width: 22px; right: -14px; top: 44px; transform: rotate(5deg); }
+.cat-whisker.right-2 { width: 20px; right: -12px; top: 50px; transform: rotate(-8deg); }
+
+/* Blue Collar & Tag */
+.cat-collar {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 58px;
+  height: 9px;
+  background: #2563eb; /* Blue collar from photo */
+  border-radius: 5px;
+  z-index: 9;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.cat-bell {
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 9px;
+  height: 9px;
+  background: #facc15;
+  border-radius: 50%;
+  border: 1px solid #ca8a04;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  z-index: 10;
+}
+
+/* Equippable Hat / Headwear Anchor */
+.cat-hat-slot {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 2.3rem;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+  animation: hatBob 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes hatBob {
+  0% { transform: translateX(-50%) translateY(0); }
+  100% { transform: translateX(-50%) translateY(-2px); }
+}
+
+/* Room Decor Items */
+.decor-slot {
+  position: absolute;
+  z-index: 12;
+  font-size: 2.2rem;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+  display: none;
+}
+
+.decor-slot.active {
+  display: block;
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  0% { transform: scale(0.4); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.decor-food { left: 195px; bottom: 35px; font-size: 1.8rem; }
+.decor-toy { right: 170px; bottom: 25px; font-size: 1.7rem; }
+.decor-plant { left: 14px; bottom: 130px; font-size: 2rem; }
+.decor-tree { right: 12px; bottom: 125px; font-size: 2.4rem; }
+
+/* Floating Hearts when pet */
+.pet-hearts-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 30;
+}
+
+.floating-heart {
+  position: absolute;
+  font-size: 1.4rem;
+  animation: floatHeart 1.4s ease-out forwards;
+}
+
+@keyframes floatHeart {
+  0% { transform: translateY(0) scale(0.6); opacity: 1; }
+  100% { transform: translateY(-70px) scale(1.3); opacity: 0; }
+}
+
+/* Pet Speech Bubble / Status */
+.pet-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+}
+
+.pet-message {
+  font-size: 0.86rem;
+  color: #f1f5f9;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pet-btn-action {
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: none;
+  background: rgba(139, 92, 246, 0.25);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pet-btn-action:active {
+  transform: scale(0.94);
+  background: rgba(139, 92, 246, 0.4);
+}
+
+/* =========================================
+   BOUTIQUE & DECOR SHOP (DIGITAL REWARDS)
+   ========================================= */
+.shop-tabs {
+  display: flex;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px;
+  border-radius: 14px;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.shop-tab-btn {
+  flex: 1;
+  padding: 8px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 10px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shop-tab-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.shop-item-card {
+  padding: 14px 12px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.shop-item-card.equipped {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: rgba(16, 185, 129, 0.08);
+}
+
+.shop-item-icon {
+  font-size: 2.2rem;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+  margin: 4px 0;
+}
+
+.shop-item-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.2;
+}
+
+.shop-item-desc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.2;
+  min-height: 28px;
+}
+
+.shop-item-cost {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.shop-action-btn {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.shop-action-btn.buy {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1e1b4b;
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
+}
+
+.shop-action-btn.equip {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.shop-action-btn.unequip {
+  background: rgba(244, 63, 94, 0.2);
+  color: #fda4af;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.shop-action-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* Modals & Overlays */
@@ -869,39 +1457,6 @@ header {
   height: 16px;
 }
 
-/* Voucher Modal */
-.voucher-card {
-  text-align: center;
-  border: 2px dashed var(--accent-gold);
-  padding: 24px 18px;
-  border-radius: 20px;
-  background: rgba(251, 191, 36, 0.05);
-}
-
-.voucher-title {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #fff;
-  margin: 8px 0;
-}
-
-.voucher-instructions {
-  font-size: 0.85rem;
-  color: var(--accent-gold);
-  margin-bottom: 12px;
-}
-
-.voucher-code {
-  display: inline-block;
-  font-family: monospace;
-  font-size: 0.95rem;
-  padding: 6px 14px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-secondary);
-}
-
 /* Admin Dashboard Modal / Drawer */
 .admin-drawer {
   max-width: 440px;
@@ -936,45 +1491,6 @@ header {
   color: var(--accent-purple);
   text-transform: uppercase;
   letter-spacing: 0.6px;
-}
-
-.voucher-item {
-  padding: 12px;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.voucher-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.voucher-item-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: #fff;
-}
-
-.voucher-item-time {
-  font-size: 0.72rem;
-  color: var(--text-muted);
-}
-
-.fulfill-btn {
-  padding: 6px 12px;
-  font-size: 0.75rem;
-  border-radius: 8px;
-  border: none;
-  background: var(--accent-emerald);
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 .admin-controls-grid {
