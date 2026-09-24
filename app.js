@@ -327,143 +327,172 @@ const state = new AppState();
 
 // --- MEEKO REALISTIC SVG TEMPLATE GENERATOR ---
 function getMeekoSVG(facing = 'right', isWalking = false) {
-  // Generates an anatomically authentic SVG cat with Meeko's distinctive markings:
-  // - True tuxedo black cap over ears & cheek sides
-  // - Asymmetrical clipped/notched left ear
-  // - Heart/triangle black spot on his pink nose
-  // - Soft white blaze down muzzle & full white chest bib
-  // - Olive green almond eyes with reflections
-  // - Seamlessly articulated tail curving up from the lumbar base
-  // - Royal blue collar with bell & diamond tag
-  const flip = facing === 'left' ? 'transform="scale(-1, 1) translate(-200, 0)"' : '';
-  const legOffset1 = isWalking ? '10' : '0';
-  const legOffset2 = isWalking ? '-10' : '0';
+  const scaleX = facing === 'left' ? -1 : 1;
+  const translateX = facing === 'left' ? -200 : 0;
+  const flip = `transform="translate(${translateX}, 0) scale(${scaleX}, 1)"`;
+  
+  const pawOffset1 = isWalking ? 12 : 0;
+  const pawOffset2 = isWalking ? -12 : 0;
+  
+  const tailAnim = isWalking 
+    ? `<animateTransform attributeName="transform" type="rotate" values="-15 150 150; 25 150 150; -15 150 150" dur="0.8s" repeatCount="indefinite"/>` 
+    : `<animateTransform attributeName="transform" type="rotate" values="0 150 150; 5 150 150; 0 150 150" dur="3s" repeatCount="indefinite"/>`;
+
+  const breatheAnim = isWalking 
+    ? `` 
+    : `<animateTransform attributeName="transform" type="scale" values="1 1; 1.02 1.02; 1 1" dur="2.5s" repeatCount="indefinite" additive="sum"/>`;
 
   return `
   <svg class="meeko-svg-art" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
     <defs>
-      <!-- Olive Hazel Cat Eye Gradient -->
-      <radialGradient id="meekoEyeGrad" cx="35%" cy="35%" r="65%">
-        <stop offset="0%" stop-color="#d9f99d"/>
-        <stop offset="35%" stop-color="#84cc16"/>
-        <stop offset="80%" stop-color="#4d7c0f"/>
+      <!-- Premium 2D Art Filters -->
+      <filter id="softFur" x="-10%" y="-10%" width="120%" height="120%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise" />
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.5" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+
+      <filter id="dropShadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="2" dy="8" stdDeviation="6" flood-color="#0f172a" flood-opacity="0.35" />
+      </filter>
+
+      <!-- Deep Vector Gradients -->
+      <radialGradient id="tuxedoBody" cx="30%" cy="30%" r="80%">
+        <stop offset="0%" stop-color="#3b3d45"/>
+        <stop offset="50%" stop-color="#18191f"/>
+        <stop offset="100%" stop-color="#0a0a0c"/>
+      </radialGradient>
+      
+      <linearGradient id="whiteFurGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="85%" stop-color="#e2e8f0"/>
+        <stop offset="100%" stop-color="#94a3b8"/>
+      </linearGradient>
+
+      <!-- Meeko's Captivating Hazel-Green Eyes -->
+      <radialGradient id="eyeGradient" cx="40%" cy="40%" r="60%">
+        <stop offset="0%" stop-color="#eaff8f"/>
+        <stop offset="40%" stop-color="#84cc16"/>
+        <stop offset="80%" stop-color="#3f6212"/>
         <stop offset="100%" stop-color="#14532d"/>
       </radialGradient>
-      <!-- Tuxedo Fur Soft Shading -->
-      <linearGradient id="furShade" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#2a2c35"/>
-        <stop offset="40%" stop-color="#18191f"/>
-        <stop offset="100%" stop-color="#0f1013"/>
+
+      <!-- Metallic Accents -->
+      <linearGradient id="goldBell" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#fef08a"/>
+        <stop offset="40%" stop-color="#eab308"/>
+        <stop offset="100%" stop-color="#713f12"/>
       </linearGradient>
-      <!-- Soft Inner Ear Pink -->
-      <linearGradient id="innerEarGrad" x1="0%" y1="100%" x2="0%" y2="0%">
-        <stop offset="0%" stop-color="#fda4af"/>
-        <stop offset="100%" stop-color="#fecdd3"/>
-      </linearGradient>
-      <!-- White fur soft gradient -->
-      <linearGradient id="whiteFur" x1="0%" y1="0%" x2="0%" y2="100%">
+
+      <linearGradient id="diamondShine" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#ffffff"/>
-        <stop offset="90%" stop-color="#f8fafc"/>
-        <stop offset="100%" stop-color="#e2e8f0"/>
+        <stop offset="30%" stop-color="#bae6fd"/>
+        <stop offset="70%" stop-color="#38bdf8"/>
+        <stop offset="100%" stop-color="#0284c7"/>
       </linearGradient>
     </defs>
 
     <g ${flip}>
-      <!-- TAIL (Seamlessly integrated into lower spine/rump) -->
-      <g class="cat-tail-group">
-        <path d="M 132 150 C 158 140, 175 110, 168 70 C 165 50, 150 25, 142 18 C 137 14, 131 18, 134 26 C 142 42, 148 68, 144 95 C 140 120, 126 138, 118 152 Z" 
-              fill="url(#furShade)"/>
+      <!-- FLOOR SHADOW -->
+      <ellipse cx="100" cy="190" rx="60" ry="12" fill="#0f172a" opacity="0.3" filter="blur(4px)" />
+
+      <!-- TAIL -->
+      <g>
+        ${tailAnim}
+        <path d="M 125 155 C 160 150, 180 110, 175 60 C 173 35, 155 10, 140 10 C 130 10, 125 20, 130 35 C 145 65, 145 100, 135 125 C 125 145, 110 150, 125 155 Z" 
+              fill="url(#tuxedoBody)" filter="url(#softFur)" />
       </g>
 
-      <!-- HINDQUARTERS & BODY -->
-      <ellipse cx="110" cy="148" rx="46" ry="42" fill="url(#furShade)"/>
+      <!-- HINDQUARTERS -->
+      <path d="M 80 120 C 130 110, 160 140, 150 180 C 145 195, 110 195, 100 180 C 95 160, 80 140, 80 120 Z" fill="url(#tuxedoBody)" filter="url(#softFur)" />
+      <!-- Back Paw -->
+      <path d="M 125 180 C 140 178, 150 185, 150 192 C 150 198, 135 200, 125 195 Z" fill="url(#whiteFurGrad)" />
+
+      <!-- TORSO & CHEST -->
+      <g>
+        ${breatheAnim}
+        <path d="M 60 90 C 110 80, 130 130, 110 180 C 90 190, 50 180, 45 130 C 40 90, 60 90, 60 90 Z" fill="url(#tuxedoBody)" filter="url(#softFur)" />
+        
+        <!-- WHITE BIB -->
+        <path d="M 65 100 C 85 105, 105 120, 105 145 C 105 170, 85 185, 65 175 C 50 160, 55 120, 65 100 Z" fill="url(#whiteFurGrad)" filter="url(#softFur)" />
+      </g>
+
+      <!-- FRONT LEGS -->
+      <g transform="translate(${pawOffset2}, 0)">
+        <path d="M 90 140 C 95 160, 100 180, 95 190 C 90 200, 75 195, 75 185 C 75 170, 80 150, 90 140 Z" fill="url(#tuxedoBody)" />
+        <ellipse cx="85" cy="192" rx="12" ry="8" fill="url(#whiteFurGrad)" />
+      </g>
       
-      <!-- Back spine silver/white streak -->
-      <path d="M 125 125 Q 120 145 128 160" stroke="rgba(255,255,255,0.4)" stroke-width="3" stroke-linecap="round" fill="none"/>
-
-      <!-- HIND PAW -->
-      <ellipse cx="138" cy="186" rx="14" ry="10" fill="url(#whiteFur)"/>
-
-      <!-- FORE CHEST & FRONT BODY -->
-      <ellipse cx="88" cy="138" rx="40" ry="46" fill="url(#furShade)"/>
-
-      <!-- WHITE CHEST BIB -->
-      <path d="M 68 106 C 75 106, 92 115, 105 110 C 114 125, 115 158, 98 178 C 84 184, 68 180, 62 165 C 56 142, 58 118, 68 106 Z" 
-            fill="url(#whiteFur)"/>
-
-      <!-- FRONT LEGS & MITTENS -->
-      <!-- Back front leg -->
-      <g transform="translate(${legOffset2}, 0)">
-        <path d="M 94 145 L 98 184 L 110 184 L 106 145 Z" fill="url(#furShade)"/>
-        <ellipse cx="106" cy="188" rx="12" ry="8" fill="url(#whiteFur)"/>
-      </g>
-      <!-- Main front leg -->
-      <g transform="translate(${legOffset1}, 0)">
-        <path d="M 70 140 L 70 185 L 86 185 L 84 140 Z" fill="url(#whiteFur)"/>
-        <ellipse cx="78" cy="188" rx="13" ry="9" fill="url(#whiteFur)"/>
-        <line x1="75" y1="184" x2="75" y2="191" stroke="#cbd5e1" stroke-width="1.5"/>
-        <line x1="81" y1="184" x2="81" y2="191" stroke="#cbd5e1" stroke-width="1.5"/>
+      <g transform="translate(${pawOffset1}, 0)">
+        <path d="M 65 140 C 70 165, 70 180, 65 192 C 60 200, 45 195, 45 185 C 45 170, 55 150, 65 140 Z" fill="url(#whiteFurGrad)" filter="url(#softFur)" />
+        <path d="M 42 190 C 42 182, 68 182, 68 190 C 68 198, 42 198, 42 190 Z" fill="url(#whiteFurGrad)" />
+        <line x1="50" y1="188" x2="50" y2="195" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="58" y1="188" x2="58" y2="195" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
       </g>
 
-      <!-- CAT HEAD -->
-      <g class="cat-head-group">
-        <!-- Skull Base -->
-        <ellipse cx="76" cy="82" rx="44" ry="38" fill="url(#furShade)"/>
+      <!-- HEAD & FACE -->
+      <g filter="url(#dropShadow)">
+        <!-- Skull -->
+        <path d="M 40 70 C 40 40, 100 40, 100 70 C 110 90, 90 120, 70 120 C 50 120, 30 90, 40 70 Z" fill="url(#tuxedoBody)" filter="url(#softFur)" />
 
-        <!-- RIGHT EAR -->
-        <polygon points="90,56 112,18 78,44" fill="url(#furShade)"/>
-        <polygon points="90,53 106,25 82,46" fill="url(#innerEarGrad)"/>
-        <!-- Inner ear fur tufts -->
-        <path d="M 82 48 Q 92 38 98 42" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.8"/>
+        <!-- Right Ear -->
+        <path d="M 85 50 C 95 30, 115 15, 115 15 C 115 15, 110 35, 95 55 Z" fill="url(#tuxedoBody)" />
+        <path d="M 88 48 C 95 35, 108 22, 108 22 C 108 22, 105 35, 95 50 Z" fill="#fbcfe8" opacity="0.8" />
+        
+        <!-- Left Ear (Notched) -->
+        <path d="M 55 50 C 45 30, 30 15, 30 15 C 35 15, 40 22, 45 22 C 50 18, 55 25, 55 25 C 55 35, 65 55, 65 55 Z" fill="url(#tuxedoBody)" />
+        <path d="M 52 48 C 45 35, 38 22, 38 22 C 45 22, 50 28, 50 28 C 50 35, 58 50, 58 50 Z" fill="#fbcfe8" opacity="0.8" />
 
-        <!-- LEFT EAR (With Meeko's distinctive clipped/tipped notch!) -->
-        <path d="M 64,55 L 42,22 L 48,22 L 53,28 L 56,22 L 72,46 Z" fill="url(#furShade)"/>
-        <polygon points="62,52 48,28 66,46" fill="url(#innerEarGrad)"/>
-        <path d="M 66 48 Q 58 38 52 42" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.8"/>
+        <!-- White Muzzle/Blaze -->
+        <path d="M 70 45 C 55 60, 40 70, 45 90 C 45 105, 60 115, 70 115 C 80 115, 95 105, 95 90 C 100 70, 85 60, 70 45 Z" fill="url(#whiteFurGrad)" filter="url(#softFur)" />
 
-        <!-- TUXEDO WHITE FACE BLAZE & CHEEKS -->
-        <path d="M 76,48 Q 72,62 66,74 C 54,78 48,88 50,98 C 52,108 64,114 76,114 C 88,114 100,108 102,98 C 104,88 98,78 86,74 Q 80,62 76,48 Z" 
-              fill="url(#whiteFur)"/>
-
-        <!-- EYES (Hazel / Olive Green with Pupil Depth) -->
+        <!-- Eyes -->
         <!-- Left Eye -->
-        <ellipse cx="62" cy="78" rx="9" ry="11" fill="url(#meekoEyeGrad)"/>
-        <ellipse cx="62" cy="78" rx="4" ry="8" fill="#09090b"/>
-        <circle cx="60" cy="75" r="2.8" fill="#ffffff"/>
-        <circle cx="64" cy="82" r="1.4" fill="#ffffff" opacity="0.7"/>
-
+        <g transform="translate(52, 72)">
+          <path d="M 0 5 C 5 0, 15 0, 20 5 C 20 12, 10 15, 0 5 Z" fill="url(#eyeGradient)" />
+          <ellipse cx="10" cy="5" rx="3.5" ry="6" fill="#020617" />
+          <circle cx="7" cy="3" r="2" fill="#ffffff" />
+          <circle cx="12" cy="7" r="0.8" fill="#ffffff" opacity="0.6" />
+          <path d="M -2 5 C 5 -2, 17 -2, 22 5" stroke="#020617" stroke-width="2" fill="none" stroke-linecap="round" />
+        </g>
+        
         <!-- Right Eye -->
-        <ellipse cx="90" cy="78" rx="9" ry="11" fill="url(#meekoEyeGrad)"/>
-        <ellipse cx="90" cy="78" rx="4" ry="8" fill="#09090b"/>
-        <circle cx="88" cy="75" r="2.8" fill="#ffffff"/>
-        <circle cx="92" cy="82" r="1.4" fill="#ffffff" opacity="0.7"/>
-
-        <!-- MEEKO'S DISTINCTIVE BLACK NOSE SPOT -->
-        <path d="M 71,91 C 71,88 81,88 81,91 C 81,94 77,97 76,98 C 75,97 71,94 71,91 Z" fill="#18191f"/>
-
-        <!-- MOUTH & SWEET PINK CHIN -->
-        <path d="M 71,99 Q 76,103 81,99" stroke="#71717a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-        <ellipse cx="76" cy="106" rx="5" ry="3" fill="#fecdd3" opacity="0.7"/>
-
-        <!-- REALISTIC WHISKERS -->
-        <g stroke="#ffffff" stroke-width="1.2" opacity="0.85" stroke-linecap="round">
-          <!-- Left whiskers -->
-          <line x1="60" y1="94" x2="30" y2="90"/>
-          <line x1="60" y1="97" x2="28" y2="101"/>
-          <line x1="62" y1="100" x2="34" y2="110"/>
-          <!-- Right whiskers -->
-          <line x1="92" y1="94" x2="122" y2="90"/>
-          <line x1="92" y1="97" x2="124" y2="101"/>
-          <line x1="90" y1="100" x2="118" y2="110"/>
+        <g transform="translate(78, 72)">
+          <path d="M 0 5 C 5 0, 15 0, 20 5 C 20 12, 10 15, 0 5 Z" fill="url(#eyeGradient)" />
+          <ellipse cx="10" cy="5" rx="3.5" ry="6" fill="#020617" />
+          <circle cx="7" cy="3" r="2" fill="#ffffff" />
+          <circle cx="12" cy="7" r="0.8" fill="#ffffff" opacity="0.6" />
+          <path d="M -2 5 C 5 -2, 17 -2, 22 5" stroke="#020617" stroke-width="2" fill="none" stroke-linecap="round" />
         </g>
 
-        <!-- ROYAL BLUE COLLAR WITH BELL & TAG -->
-        <path d="M 52,108 Q 76,122 100,108 L 102,115 Q 76,129 50,115 Z" fill="#2563eb" stroke="#1d4ed8" stroke-width="1"/>
-        <!-- Golden Bell -->
-        <circle cx="76" cy="122" r="6" fill="#facc15" stroke="#ca8a04" stroke-width="1"/>
-        <circle cx="76" cy="123" r="1.5" fill="#713f12"/>
-        <!-- Hanging ID Tag -->
-        <polygon points="76,127 80,133 76,138 72,133" fill="#e2e8f0" stroke="#94a3b8" stroke-width="0.8"/>
+        <!-- Nose with Spot -->
+        <path d="M 66 92 C 68 89, 72 89, 74 92 C 75 94, 72 97, 70 98 C 68 97, 65 94, 66 92 Z" fill="#f43f5e" />
+        <path d="M 68 91 C 70 90, 72 90, 71 92 C 70 93, 68 93, 68 91 Z" fill="#020617" />
+
+        <!-- Mouth & Chin -->
+        <path d="M 64 100 C 68 104, 72 104, 76 100" stroke="#64748b" stroke-width="1.5" fill="none" stroke-linecap="round" />
+        <path d="M 68 104 C 70 108, 70 108, 72 104 Z" fill="#fecdd3" opacity="0.8" />
+
+        <!-- Whiskers -->
+        <g stroke="#ffffff" stroke-width="1" opacity="0.75" stroke-linecap="round" filter="url(#dropShadow)">
+          <line x1="55" y1="95" x2="25" y2="85" />
+          <line x1="55" y1="98" x2="20" y2="98" />
+          <line x1="57" y1="101" x2="28" y2="110" />
+          <line x1="85" y1="95" x2="115" y2="85" />
+          <line x1="85" y1="98" x2="120" y2="98" />
+          <line x1="83" y1="101" x2="112" y2="110" />
+        </g>
+      </g>
+
+      <!-- COLLAR & TAG -->
+      <g filter="url(#dropShadow)">
+        <path d="M 45 110 C 60 122, 80 122, 95 110 C 95 116, 80 128, 45 116 Z" fill="#1d4ed8" />
+        <path d="M 45 110 C 60 122, 80 122, 95 110" stroke="#1e3a8a" stroke-width="2" fill="none" />
+        
+        <circle cx="70" cy="120" r="7" fill="url(#goldBell)" />
+        <line x1="64" y1="120" x2="76" y2="120" stroke="#854d0e" stroke-width="1" />
+        <circle cx="70" cy="123" r="1.5" fill="#422006" />
+
+        <polygon points="70,128 75,134 70,140 65,134" fill="url(#diamondShine)" stroke="#38bdf8" stroke-width="1" />
       </g>
     </g>
   </svg>
